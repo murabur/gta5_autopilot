@@ -1,4 +1,4 @@
-# GTA V Autopilot Lab
+# GTA V Autopilot
 
 ## 🛠️ Development Environment
 * **Conda Env:** `gta5_autopilot`
