@@ -19,3 +19,4 @@ pip install numpy opencv-python pillow mss bettercam
 | Method | Avg FPS | Status |
 | :--- | :--- | :--- |
 | **Pillow** | 12 FPS | Baseline (Low Performance) |
+| **MSS** | 40-60 | Good | Stable with 5-frame moving average. |
