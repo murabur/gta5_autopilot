@@ -1,24 +1,30 @@
-from PIL import ImageGrab  #capture screen - PILLOW
-import cv2 #opencv python
-import numpy as np 
-import time
+from PIL import ImageGrab                           #capture screen - PILLOW
+import cv2                                          #opencv python
+import numpy as np                                  #C tabanlı performanslı liste - matris - tensor işlemleri kütüphanesi
+import time                                         #fps hesaplaması için yerleşik zaman kütüphanesi
 
-capture_area = (0, 40, 1280, 760
-                )
+capture_area = (0, 40, 1280, 760)                   #yakalama bölgesinin koordinatları. sol üst x - sol üst y - sağ alt x - sağ alt y koordinatları. 
 while True:
-    fps1 = time.time()
+    t0 = time.time()                                #yakalama işleminin başladığı t0 anı
 
-    capture = ImageGrab.grab(bbox= capture_area )
-    frame = np.array(capture)
-    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+    capture = ImageGrab.grab(bbox= capture_area )   #ImageGrab ile grap işlemi (bbox = capture_area) = yakalanacak görüntünün koordinatları
+    frame = np.array(capture)                       #PIL nesnesi numpy arraye çevrilerek opencv'ye verilebilir hale getiriliyor.
+    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)  #opencv BGR görüntü kabul ediyor. cv2.COLOR_RGB2BGR ile görüntü RGB'den BGR'ye çevriliyor. Bu işlem yapılmadığı vakit olacakları görmek için bu satırı yorum satırına alabilirsiniz. 
 
-    fps2 = time.time()
-    fps = int(1/(fps2 - fps1))
-    cv2.putText(frame, f"FPS: {fps}", (10,50), cv2.FONT_HERSHEY_COMPLEX, 1, (0,255,0), 2 )
+    t1 = time.time()                                #yakalama işleminin bittiği t1 anı
+    fps = int(1/(t1 - t0))                          # 1 saniye bölü zaman farkı = FPS
 
-    cv2.imshow("frame", frame)
+    cv2.rectangle(img=frame, pt1=(0, 10), pt2=(180, 70), color=(0, 0, 0), thickness=-1) #yazının altına siyah bant çekmek isterseniz en baştakğ #'ı kaldırıp yorumu etkisizleştirin.
 
-    if cv2.waitKey(1) & 0xFF == ord("q"):
+
+    cv2.putText(img=frame, text=f"FPS: {fps}", org=(10, 50), fontFace=cv2.FONT_HERSHEY_COMPLEX, fontScale=1, color=(0, 255, 0), thickness=2) #parametreler kendini açıklıyor. 
+    #img = görüntü matrisi, text= yazı #org yazının matristeki pozisyonu #fontface = font , fontscale = yazı boyutu katsayısı , color = BGR - Blue Green Red formatında yazı rengi, thickness = kalınlık
+
+
+
+    cv2.imshow("frame", frame)      
+
+    if cv2.waitKey(1) & 0xFF == ord("q"): #görüntüyü 1ms beklet ve  q'ya basılırsa işlemi gerçekleştir(break: döngüyü(while True) kır)
         break
 
 
