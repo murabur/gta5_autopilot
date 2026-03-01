@@ -1,23 +1,23 @@
-# GTA V Autopilot
+# GTA V Otopilot
 
-## 🛠️ Development Environment
-* **Conda Env:** `gta5_autopilot`
+## 🛠️ Geliştirme ortamı
+* **Conda Env:** `gta5_autopilot_v1`
 * **Python:** 3.10
 
 ### Setup
 ```bash
-conda create -n gta5_autopilot python=3.10 -y
-conda activate gta5_autopilot
+conda create -n gta5_autopilot_v1 python=3.10 -y
+conda activate gta5_autopilot_v1
 pip install numpy opencv-python pillow mss bettercam
 ```
-## 💻 Hardware Specifications
+## 💻 Donanım
 * **CPU:** AMD Ryzen 5600X
 * **GPU:** Nvidia RTX 5070 Ti
 * **RAM:** 32 GB
-* **Resolution:** 1280x720 (Capture Area)
+* **Çözünürlük:** 1280x720 (Yakalama alanı)
 
-| Method | Avg FPS | Status |
+| Metod | Avg FPS | 
 | :--- | :--- | :--- |
-| **Pillow** | 12 FPS | Baseline (Low Performance) |
-| **MSS** | 40-60 FPS | Good  |
-| **Bettercam** | 300 - 400 FPS | Direct GPU Grab - Only Windows |
+| **Pillow** | 12 FPS |
+| **MSS** | 40-60 FPS |
+| **Bettercam** | 300 - 400 FPS | 
