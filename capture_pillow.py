@@ -14,7 +14,7 @@ while True:
     t1 = time.time()                                #yakalama işleminin bittiği t1 anı
     fps = int(1/(t1 - t0))                          # 1 saniye bölü zaman farkı = FPS
 
-    cv2.rectangle(img=frame, pt1=(0, 10), pt2=(180, 70), color=(0, 0, 0), thickness=-1) #yazının altına siyah bant çekmek isterseniz en baştakğ #'ı kaldırıp yorumu etkisizleştirin.
+    #cv2.rectangle(img=frame, pt1=(0, 10), pt2=(180, 70), color=(0, 0, 0), thickness=-1) #yazının altına siyah bant çekmek isterseniz en baştakğ #'ı kaldırıp yorumu etkisizleştirin.
 
 
     cv2.putText(img=frame, text=f"FPS: {fps}", org=(10, 50), fontFace=cv2.FONT_HERSHEY_COMPLEX, fontScale=1, color=(0, 255, 0), thickness=2) #parametreler kendini açıklıyor. 
@@ -22,7 +22,7 @@ while True:
 
 
 
-    cv2.imshow("frame", frame)      
+    cv2.imshow("PIL ImageGrab", frame)      
 
     if cv2.waitKey(1) & 0xFF == ord("q"): #görüntüyü 1ms beklet ve  q'ya basılırsa işlemi gerçekleştir(break: döngüyü(while True) kır)
         break
