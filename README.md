@@ -17,7 +17,7 @@ pip install numpy opencv-python pillow mss bettercam
 * **Çözünürlük:** 1280x720 (Yakalama alanı)
 
 | Metod | Avg FPS | 
-| :--- | :--- | :--- |
+| :--- | :--- |
 | **Pillow** | 12 FPS |
 | **MSS** | 40-60 FPS |
 | **Bettercam** | 300 - 400 FPS | 
