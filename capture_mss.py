@@ -9,9 +9,9 @@ monitor = {"top": 40, "left": 0, "width": 1280, "height": 720}  #mss kütüphane
 sct = mss.mss()                                                 #mss kütüphanesindeki mss class'ından sct adlı bir instance oluşturur.
 
 
-counter = 0
-fps = 0
-t0 = time.time()                                                #başlangıç zamanı
+counter = 0                                                     #FPS sayacı tanımlama
+fps = 0                                                         #cv2.putText'te hata vermemesi baştan için tanımlanıyor.
+t0 = time.time()                                                #başlangıç zamanı 
 
 while True:
 
