@@ -13,10 +13,6 @@ counter = 0
 fps = 0
 t0 = time.time()                                                #başlangıç zamanı
 
-
-
-print("MSS Test Başlatılıyor...")
-
 while True:
 
     img = sct.grab(monitor)                                     #belirlenin bölgenin görüntüsünü ham veri olarak çeker.
@@ -31,7 +27,7 @@ while True:
     if elapsed_time >= 1.0:
         fps = counter
         counter = 0
-        t0 = time.time()
+        t0 = 1
     
 
     cv2.rectangle(img=frame, pt1=(0, 10), pt2=(180, 70), color=(0, 0, 0), thickness=-1) #yazının altına siyah bant çekme işlemi, istemiyorsanız yorum satırına alın.
