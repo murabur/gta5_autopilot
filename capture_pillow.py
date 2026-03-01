@@ -27,4 +27,4 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord("q"): #görüntüyü 1ms beklet ve  q'ya basılırsa işlemi gerçekleştir(break: döngüyü(while True) kır)
         break
 
-
+cv2.destroyAllWindows()
