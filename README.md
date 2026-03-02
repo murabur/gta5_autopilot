@@ -28,4 +28,4 @@ pip install numpy opencv-python pillow mss bettercam
 ### 🚀 Ekran Yakalama Performans Karşılaştırması
 Farklı kütüphanelerin FPS değerleri arasındaki fark aşağıda gösterilmiştir:
 
-![FPS Kıyaslama Tablosu](screenshots\PIL vs mss vs Bettercam.png)
+![FPS Kıyaslama Tablosu](screenshots/PIL%20vs%20mss%20vs%20Bettercam.png)
