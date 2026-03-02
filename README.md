@@ -22,5 +22,10 @@ pip install numpy opencv-python pillow mss bettercam
 | Metod | Avg FPS | 
 | :--- | :--- |
 | **Pillow** | 12 FPS |
-| **MSS** | 40-60 FPS |
-| **Bettercam** | 300 - 400 FPS | 
+| **MSS** | 60 FPS |
+| **Bettercam** | 170 FPS | 
+
+### 🚀 Ekran Yakalama Performans Karşılaştırması
+Farklı kütüphanelerin FPS değerleri arasındaki fark aşağıda gösterilmiştir:
+
+![FPS Kıyaslama Tablosu](screenshots\PIL vs mss vs Bettercam.png)
