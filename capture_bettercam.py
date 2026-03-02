@@ -1,44 +1,41 @@
-import bettercam
-import cv2
-import numpy as np
+import bettercam                #Desktop Duplication API tabanlı kütüphane. Yalnızca Windows - GPU üzerinden veri çeker
+import cv2                      #opencv
+import numpy as np              #numpy liste - matris - tensör işlemleri
 import time
 
-capture_area = (0, 40, 1280, 760) 
-camera = bettercam.create(output_color="BGR")
+capture_area = (0, 40, 1280, 760)               #yakalama alanı (Sol Üst X, Sol Üst Y, Sağ Alt X, Sağ Alt Y)
+camera = bettercam.create(output_color="BGR")   #create fonksiyonu ile parametreye göre en uygun instance oluşturulur. 
+#opencv için BGR modunda çıktı alınarak performans cv2.cvtColor performans kaybı önlenir.
 
-counter = 0
-# 1. Değişkeni string ("0") değil, sayı (0) olarak başlatıyoruz
-display_fps = 0 
+
+counter = 0         #FPS sayacı tanımlama
+fps = 0             #cv2.putText'te hata vermemesi baştan için tanımlanıyor.
+t0 = time.time()    #başlangıç zamanı
+
 
 while True:
-    loop_start = time.time()
     
-    capture = camera.grab(region=capture_area)
-    if capture is None: continue
+    capture = camera.grab(region=capture_area)                  #belirlenen alandan ekran görüntüsü numpy array olarak alınır.
+    if capture is None: continue                                #bettercam bazen none döndürüp programı çökertebilir. Capture None dönerse "devam et"
     
-    process_time = time.time() - loop_start
-    
-    if process_time > 0:
-        current_fps = 1.0 / process_time
-    else:
-        current_fps = 0
 
+    #saniye bazlı fps ölçümü
     counter += 1
-    
-    # 2. Gereksiz str() dönüşümü kalktı. Sadece sayıyı güncelliyoruz.
-    if counter >= 30: 
-        display_fps = int(current_fps)
+    t1 = time.time()                                            #bitiş zamanı
+    elapsed_time = t1 - t0                                      #geçen zaman
+    if elapsed_time >= 1.0:                                     #1 saniye geçtiyse True döndür
+        fps = counter
         counter = 0
-
-    # 3. f-string zaten "{display_fps}" kısmını otomatik string yapar.
-    cv2.putText(capture, f"FPS: {display_fps}", (10,50), cv2.FONT_HERSHEY_COMPLEX, 1, (0,255,0), 2 )
+        t0 = t1                                                 #bitiş zamanını devralma, mikro kaymaların birikerek hata oluşturmasını önler
     
-    cv2.imshow("Frame", capture)
+    
+    cv2.rectangle(img= capture, pt1=(0, 10), pt2=(180, 70), color=(0, 0, 0), thickness=-1) #yazının altına siyah bant çekme işlemi, istemiyorsanız yorum satırına alın.
+    cv2.putText(img=capture, text=f"FPS: {fps}", org=(10, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 255, 0), thickness=2)
+    cv2.imshow("Bettercam", capture)
 
-    key = cv2.waitKey(1) & 0xFF
-    if key == ord("q"):
+    if cv2.waitKey(1) & 0xFF== ord("q"):
         break
-    if cv2.getWindowProperty("Frame", cv2.WND_PROP_VISIBLE) < 1:
+    if cv2.getWindowProperty("Bettercam", cv2.WND_PROP_VISIBLE) < 1: #çarpıya basılınca arka planda hayalet şekilde işlemin devam etmesini önler
         break
    
 cv2.destroyAllWindows()
