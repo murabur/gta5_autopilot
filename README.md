@@ -1,5 +1,8 @@
 # GTA V Otopilot
 
+# Miniconda - VS Code kurulumu - YOLO Custom Object Detection rehberi
+# https://muratburc.com/custom-object-detection/
+
 ## 🛠️ Geliştirme ortamı
 * **Conda Env:** `gta5_autopilot_v1`
 * **Python:** 3.10
