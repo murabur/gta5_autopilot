@@ -36,5 +36,7 @@ while True:
 
     if cv2.waitKey(1) & 0xFF == ord("q"):
         break
+    if cv2.getWindowProperty("MSS", cv2.WND_PROP_VISIBLE) < 1: #çarpıya basılınca arka planda hayalet şekilde işlemin devam etmesini önler
+        break
 
 cv2.destroyAllWindows()
