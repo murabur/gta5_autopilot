@@ -29,3 +29,6 @@ pip install numpy opencv-python pillow mss bettercam
 Farklı kütüphanelerin FPS değerleri arasındaki fark aşağıda gösterilmiştir:
 
 ![FPS Kıyaslama Tablosu](Bolum_1_Ekran_Yakalama/PIL%20vs%20mss%20vs%20Bettercam.png)
+
+
+- 4.03.2026 - Open CV bölümüne başlandı. Görüntü okuma dosyası eklendi.
