@@ -1,6 +1,6 @@
 Takip edilmesi planlanan müfredat budur. Size bunun hepsini yapacağımın garantisini veremiyorum. Çoğunu yapmaya çalışacağım.
 
-# OpenCV Python Fonksiyon Referansı — Tam Liste
+# OpenCV Python Fonksiyon Referansı
 
 ## 1. Görüntü Okuma / Yazma / Gösterme
 
