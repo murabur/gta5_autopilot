@@ -9,7 +9,7 @@ Takip edilmesi planlanan müfredat budur. Size bunun hepsini yapacağımın gara
 | `cv2.imread(path, flag)` | Dosyadan görüntü okur. flag: IMREAD_COLOR, IMREAD_GRAYSCALE, IMREAD_UNCHANGED |[✅ 1_goruntu_okuma.py](./1_goruntu_okuma.py) |
 | `cv2.imwrite(path, img)` | Görüntüyü dosyaya yazar (jpg, png, bmp...) |
 | `cv2.imshow(name, img)` | Pencerede görüntü gösterir |[✅ 1_goruntu_okuma.py](./1_goruntu_okuma.py) |
-| `cv2.waitKey(ms)` | Belirtilen ms kadar tuş bekler. 0 = sonsuza kadar |[✅ 1_goruntu_okuma.py](./1_goruntu_okuma.py) |
+| `cv2.waitKey(ms)` | Belirtilen ms kadar tuş bekler. 0 = sonsuza kadar |[✅ 1_goruntu_okuma.py](./1_goruntu_okuma.py) | [✅ 4_video_dosyasindan_goruntu_okuma.py](./4_video_dosyasindan_goruntu_okuma.py)
 | `cv2.destroyAllWindows()` | Tüm OpenCV pencerelerini kapatır |[✅ 1_goruntu_okuma.py](./1_goruntu_okuma.py) |
 | `cv2.destroyWindow(name)` | Belirli bir pencereyi kapatır |
 | `cv2.namedWindow(name, flag)` | Pencere oluşturur. WINDOW_NORMAL = boyutlandırılabilir |
