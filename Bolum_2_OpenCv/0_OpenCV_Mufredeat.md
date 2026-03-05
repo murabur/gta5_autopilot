@@ -306,5 +306,3 @@ Takip edilmesi planlanan müfredat budur. Size bunun hepsini yapacağımın gara
 
 **Toplam: ~180+ fonksiyon, 21 kategori**
 
-Senin GTA projesinde doğrudan kullandıkların: Bölüm 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 20
-Video için anlatman gerekenler: Hepsi
