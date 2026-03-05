@@ -114,6 +114,7 @@ Bu projenin amacı GTA 5'de Autopilot yaparken görüntü işleme ve yapay zeka 
 ## Gelecek hedefleri
 - YOLO yerine Custom CNN kullanılması
 - Vision Transformer
+---
 
 
 - 4.03.2026 - Open CV bölümüne başlandı. Görüntü okuma dosyası eklendi.
