@@ -19,12 +19,12 @@ Takip edilmesi planlanan müfredat budur. Size bunun hepsini yapacağımın gara
 
 ## 2. Video Okuma / Yazma / Kamera
 
-| Fonksiyon | Ne Yapıyor |
-|-----------|-----------|
-| `cv2.VideoCapture(source)` | Video dosyası veya kamera açar (0 = varsayılan kamera) |
-| `cap.read()` | Bir frame okur → (bool, frame) döndürür |
+| Fonksiyon | Ne Yapıyor | Durum |
+|-----------|-----------|-----------| 
+| `cv2.VideoCapture(source)` | Video dosyası veya kamera açar (0 = varsayılan kamera) | [✅ 3_kameradan_goruntu_okuma.py](./3_kameradan_goruntu_okuma.py)
+| `cap.read()` | Bir frame okur → (bool, frame) döndürür | [✅ 3_kameradan_goruntu_okuma.py](./3_kameradan_goruntu_okuma.py)
 | `cap.isOpened()` | Video/kamera açık mı kontrol eder |
-| `cap.release()` | Video/kamera kaynağını serbest bırakır |
+| `cap.release()` | Video/kamera kaynağını serbest bırakır | [✅ 3_kameradan_goruntu_okuma.py](./3_kameradan_goruntu_okuma.py)
 | `cap.get(propId)` | Video özelliğini okur (FPS, genişlik, yükseklik...) |
 | `cap.set(propId, value)` | Video özelliğini ayarlar |
 | `cv2.VideoWriter(path, fourcc, fps, size)` | Video dosyası yazar |
@@ -305,4 +305,3 @@ Takip edilmesi planlanan müfredat budur. Size bunun hepsini yapacağımın gara
 ---
 
 **Toplam: ~180+ fonksiyon, 21 kategori**
-
