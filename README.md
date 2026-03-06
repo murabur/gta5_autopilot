@@ -1,6 +1,5 @@
 # GTA V Otopilot
 
-Bana ulaşabileceğiniz bağlantılar
 
 Bu projenin amacı GTA 5'de Autopilot yaparken görüntü işleme ve yapay zeka tekniklerini incelemektir.
 
