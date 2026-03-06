@@ -1,9 +1,12 @@
+#NOT: DETAYLANDIRILACAK.
+
 import cv2
 import numpy as np
 
 # 1. ADIM: Görüntüyü oku
-img = cv2.imread("Bolum_1_Temeller\Video_1.3_OpenCV\ornek_goruntu.png")
-rows, cols = img.shape[:2]
+img = cv2.imread("Bolum_1_Temeller\Video_1.3_OpenCV\ornek_goruntu.png")  #goruntu dosyası okunur.
+
+rows, cols = img.shape[:2] 
 
 # --- 2. ADIM: KAYDIRMA (Translation) ---
 # M = [[1, 0, tx], [0, 1, ty]]
