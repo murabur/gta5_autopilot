@@ -6,7 +6,7 @@ import cv2                      #opencv
 import numpy as np              #numpy
 
 
-img = cv2.imread("Bolum_2_OpenCv\ornek_goruntu.png", cv2.IMREAD_COLOR) #dosya yolu, renk formatı
+img = cv2.imread("Bolum_1_Temeller\Video_1.3_OpenCV\ornek_goruntu.png", cv2.IMREAD_COLOR) #dosya yolu, renk formatı
 
 cv2.imshow("frame",img)         #pencere adı, cv2.imread'ın okuduğu dosyanın atandığı değişken
 
