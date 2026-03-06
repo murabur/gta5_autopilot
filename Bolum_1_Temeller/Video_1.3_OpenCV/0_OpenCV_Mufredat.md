@@ -36,16 +36,16 @@ Takip edilmesi planlanan müfredat budur. Size bunun hepsini yapacağımın gara
 
 | Fonksiyon | Ne Yapıyor |Durum
 |-----------|-----------|-----------|
-| `cv2.line(img, pt1, pt2, color, thickness)` | Çizgi çizer |[✅5_cizim_fonksiyonları.py](./5_cizim_fonksiyonlari.py)
-| `cv2.rectangle(img, pt1, pt2, color, thickness)` | Dikdörtgen çizer. thickness=-1 → dolgulu |[✅5_cizim_fonksiyonları.py](./5_cizim_fonksiyonlari.py)
-| `cv2.circle(img, center, radius, color, thickness)` | Daire çizer |[✅5_cizim_fonksiyonları.py](./5_cizim_fonksiyonlari.py)
-| `cv2.ellipse(img, center, axes, angle, startAngle, endAngle, color, thickness)` | Elips çizer |[✅5_cizim_fonksiyonları.py](./5_cizim_fonksiyonlari.py)
-| `cv2.polylines(img, pts, isClosed, color, thickness)` | Çokgen çizer |[✅5_cizim_fonksiyonları.py](./5_cizim_fonksiyonlari.py)
-| `cv2.fillPoly(img, pts, color)` | Dolgulu çokgen çizer |[✅5_cizim_fonksiyonları.py](./5_cizim_fonksiyonlari.py)
-| `cv2.putText(img, text, org, font, scale, color, thickness, lineType)` | Metin yazar |[✅5_cizim_fonksiyonları.py](./5_cizim_fonksiyonlari.py)
-| `cv2.getTextSize(text, font, scale, thickness)` | Metin boyutunu hesaplar → (w,h), baseline |[✅5_cizim_fonksiyonları.py](./5_cizim_fonksiyonlari.py)
-| `cv2.arrowedLine(img, pt1, pt2, color, thickness)` | Oklu çizgi çizer |[✅5_cizim_fonksiyonları.py](./5_cizim_fonksiyonlari.py)
-| `cv2.drawMarker(img, pos, color, markerType, markerSize, thickness)` | İşaretçi çizer |[✅5_cizim_fonksiyonları.py](./5_cizim_fonksiyonlari.py)
+| `cv2.line(img, pt1, pt2, color, thickness)` | Çizgi çizer |[✅5_cizim_fonksiyonları.ipynb](./5_cizim_fonksiyonlari.ipynb)
+| `cv2.rectangle(img, pt1, pt2, color, thickness)` | Dikdörtgen çizer. thickness=-1 → dolgulu |[✅5_cizim_fonksiyonları.ipynb](./5_cizim_fonksiyonlari.ipynb)
+| `cv2.circle(img, center, radius, color, thickness)` | Daire çizer |[✅5_cizim_fonksiyonları.ipynb](./5_cizim_fonksiyonlari.ipynb)
+| `cv2.ellipse(img, center, axes, angle, startAngle, endAngle, color, thickness)` | Elips çizer |[✅5_cizim_fonksiyonları.ipynb](./5_cizim_fonksiyonlari.ipynb)
+| `cv2.polylines(img, pts, isClosed, color, thickness)` | Çokgen çizer |[✅5_cizim_fonksiyonları.ipynb](./5_cizim_fonksiyonlari.ipynb)
+| `cv2.fillPoly(img, pts, color)` | Dolgulu çokgen çizer |[✅5_cizim_fonksiyonları.ipynb](./5_cizim_fonksiyonlari.ipynb)
+| `cv2.putText(img, text, org, font, scale, color, thickness, lineType)` | Metin yazar |[✅5_cizim_fonksiyonları.ipynb](./5_cizim_fonksiyonlari.ipynb)
+| `cv2.getTextSize(text, font, scale, thickness)` | Metin boyutunu hesaplar → (w,h), baseline |[✅5_cizim_fonksiyonları.ipynb](./5_cizim_fonksiyonlari.ipynb)
+| `cv2.arrowedLine(img, pt1, pt2, color, thickness)` | Oklu çizgi çizer |[✅5_cizim_fonksiyonları.ipynb](./5_cizim_fonksiyonlari.ipynb)
+| `cv2.drawMarker(img, pos, color, markerType, markerSize, thickness)` | İşaretçi çizer |[✅5_cizim_fonksiyonları.ipynb](./5_cizim_fonksiyonlari.ipynb)
 | `cv2.drawContours(img, contours, idx, color, thickness)` | Konturları çizer |
 
 ## 4. Renk Dönüşümleri
