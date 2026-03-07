@@ -67,7 +67,7 @@ nvcc --version
 [cuDNN](https://developer.nvidia.com/cudnn) indir, arşivi aç. İçindeki dosyaları CUDA dizinine kopyala:
 
 ```
-bin\*.dll      →  C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.x\bin\
+bin\*.dll      →  C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v13.x\bin\
 include\*.h    →  ...\include\
 lib\x64\*.lib  →  ...\lib\x64\
 ```
