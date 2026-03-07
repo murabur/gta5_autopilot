@@ -70,10 +70,11 @@
     11. Kontur İşlemleri
 # 15.03.2026
     11. Kontur İşlemleri
-# 16.03.2026
-    12. Histogram İşlemleri
 
 ---
+# 16.03.2026
+    12. Histogram İşlemleri
+    Proje 1 - Şerit Tespiti
 # 17.03.2026
     13. Öznitelik Tespiti (Feature Detection)
 # 18.03.2026
@@ -91,6 +92,7 @@
 ---
 # 24.03.2026
     16. Görüntü Dönüşümleri (Transform)
+    Proje 2 - Hareketli Nesne takibi
 # 25.03.2026
     16. Görüntü Dönüşümleri (Transform)
 # 26.03.2026
@@ -110,10 +112,12 @@
     19. DNN (Derin Sinir Ağı) Modülü
 # 2.04.2026
     19. DNN (Derin Sinir Ağı) Modülü
+    Proje 3 - Trafik tabelası tanıma
 # 3.04.2026
     20. GUI ve Etkileşim
 # 4.04.2026
     21. Diğer Faydalı Fonksiyonlar
 # 5.04.2026
+    Proje 4 - Opencv dnn modulü ile nesne tespiti ve uzaklık ölçümü
     Numpy'a giriş
 6.04.2026
