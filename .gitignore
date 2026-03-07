@@ -1,0 +1,13 @@
+# Modeller
+*.pt
+*.engine
+*.onnx
+
+# Python Önbelleği
+__pycache__/
+*.py[cod]
+
+# Ortam Dosyaları
+.env
+venv/
+.vscode/
