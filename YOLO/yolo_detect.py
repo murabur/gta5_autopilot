@@ -55,7 +55,7 @@ def strip_letterbox(masks_data, target_h, target_w):
 
 
 #.engine dosyaları derlendiği donanıma özeldir.Nvidia GPU'nuz varsa mutlaka .pt uzantılı pytorch dosyanızdan onnx formatına ardından .engine TensorRT formatına derlemeyi yapın.
-MODEL_PATH = r"runs/segment/GTA5_XL_Autopilot/25k_XL_Optimized_Final/weights/best.engine"
+MODEL_PATH = r"YOLO\best.pt"
 model = YOLO(MODEL_PATH)
 
 camera = bettercam.create(output_color="BGR")
