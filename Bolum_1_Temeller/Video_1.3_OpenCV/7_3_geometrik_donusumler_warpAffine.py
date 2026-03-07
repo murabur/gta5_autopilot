@@ -1,5 +1,63 @@
+"""
+================================================================================
+🚨 REFACTOR (DÜZENLEME) BEKLEYEN MÜHENDİSLİK VE MATEMATİK HATALARI 🚨
+Not: Bu kod blokları "çalışıyor" gibi görünse de otonom sürüş veya 
+prodüksiyon seviyesi için aşağıdaki kusurları barındırmaktadır. 
+Gelecekteki revizyonda düzeltilecektir:
+
+1. DOSYA YOLU RİSKİ (Bug Potansiyeli):
+   - Hata: "Klasör\Video" şeklindeki yollarda ters eğik çizgi (\) kullanılmış. 
+     Python'da \v, \n, \t kaçış karakteridir (escape character). Klasör adı 
+     "notlar" olsaydı \n yüzünden kod çökecekti.
+   - Çözüm: Dosya yolunun başına 'r' (raw string) eklenmeli (r"Yol\...") 
+     veya ileri eğik çizgi (/) kullanılmalı.
+
+2. DÖNDÜRME (ROTATION) MANTIĞI YANILGISI:
+   - Hata: Yorum satırındaki "Merkezi sol üst köşeye taşıyoruz" ifadesi 
+     matematiksel olarak yanlıştır.
+   - Doğrusu: getRotationMatrix2D, resmin orijinini (0,0) sol üste değil, 
+     resmin merkezine (cx, cy) taşır, orada döndürür ve tekrar geri iterek 
+     matrisi oluşturur.
+
+3. EĞME (SHEAR) İŞLEMİNDE VERİ KAYBI (Kritik Mantık Hatası):
+   - Hata: X ekseninde 0.3 oranında eğme (shear) yapıldığında, resmin 
+     alt pikselleri sağa doğru kayar. Ancak warpAffine tuvali (cols, rows) 
+     orijinal boyutta bırakıldığı için resmin sağ tarafı bıçak gibi kesilir.
+   - Çözüm: Tuval dinamik büyütülmeli. new_cols = int(cols + (0.3 * rows)) 
+     hesaplanıp tuval ölçüsü olarak bu verilmeli.
+
+4. ÖLÇEKLEME (SCALE) İÇİN MÜHENDİSLİK EKSİKLİĞİ:
+   - Hata: warpAffine ile resmi büyütmek pikselleri bozar (Nearest Neighbor).
+   - Not Düşülecek: Otonom sürüş gibi hassas projelerde büyütme işlemi 
+     matrisle değil, piksellerin arasını kalite kaybı olmadan dolduran 
+     cv2.resize() ve Bicubic/Lanczos enterpolasyon algoritmalarıyla yapılır.
+
+5. DOKÜMANTASYONDAKİ DİKKATSİZLİKLER:
+   - İki farklı yere "5. ADIM" yazılmış.
+   - Değişken açıklamaları ("cols kolondan gelir" vb.) gereğinden fazla 
+     uzun. Sadece "Satır = Yükseklik (Y), Sütun = Genişlik (X)" 
+     denilip geçilmeli.
+================================================================================
+"""
+
+
+
 import cv2
 import numpy as np
+
+
+# Afin Dönüşüm Matrisi (2x3):
+# [[a, b, tx],
+#  [c, d, ty]]
+#
+# Kaydırma:  a=1, b=0, c=0, d=1, tx=X, ty=Y
+# Döndürme:  cos(θ), -sin(θ), sin(θ), cos(θ)
+# Eğme:      b=shear_x veya c=shear_y
+# Ölçekleme: a=sx, d=sy
+#
+# Hepsi aynı matris yapısı — sadece sayılar değişiyor.
+# Bu yüzden hepsinde cv2.warpAffine kullanıyoruz.
+
 
 # 1. ADIM: Görüntüyü oku
 img = cv2.imread("Bolum_1_Temeller\Video_1.3_OpenCV\ornek_goruntu.png")  #goruntu dosyası okunur.
