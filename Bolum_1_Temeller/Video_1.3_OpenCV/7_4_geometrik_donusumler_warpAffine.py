@@ -12,7 +12,7 @@ Gelecekteki revizyonda düzeltilecektir:
    - Çözüm: Dosya yolunun başına 'r' (raw string) eklenmeli (r"Yol\...") 
      veya ileri eğik çizgi (/) kullanılmalı.
 
-2. DÖNDÜRME (ROTATION) MANTIĞI YANILGISI:
+2. DÖNDÜRME (ROTATION) MANTIĞI YANILGISI: - Güncelleme: DÜZELTİLDİ.
    - Hata: Yorum satırındaki "Merkezi sol üst köşeye taşıyoruz" ifadesi 
      matematiksel olarak yanlıştır.
    - Doğrusu: getRotationMatrix2D, resmin orijinini (0,0) sol üste değil, 
@@ -88,7 +88,7 @@ res_trans = cv2.warpAffine(img, M_trans, (cols, rows))
 #karıştırmamanız için cols columns, kolondan. Yanyana kaç tane kolon varsa genişlik odur. 1280*720 görüntüde yatayda 1280 tane kolon vardır.
 #1280*720 görüntüde dikeyde 720 tane satır vardır.
 #center 1280//2 = 640 , 720//2 = 360 center = (640,360)
-#neden center alıyoruz? çünkü normalde matris çarpımı sol üst köşeden(0,0) noktasından döndürür. Biz merkezi sol üst köşeye taşıyarak
+#neden center alıyoruz? çünkü normalde matris çarpımı sol üst köşeden(0,0) noktasından döndürür. Biz 0,0 noktasını merkeze taşıyarak dönmenin buradan olmasını sağlıyoruz.
 #dönmenin buradan olmasını sağlıyoruz. ardından cv2.getRotationMatrix2D'den gelen matris merkezi geri yerine kaydırıyor.
 center = (cols // 2, rows // 2) 
 
