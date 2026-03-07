@@ -1,0 +1,2 @@
+- 4.03.2026 - Open CV bölümüne başlandı. Görüntü okuma dosyası eklendi.
+- 7.03.2026 - OpenCV bölümüne resize, flip, rotate, warpAffine fonksiyonlarının uygulamaları eklendi.
