@@ -125,14 +125,10 @@ while True:
                     color = CLASS_COLORS.get(class_id, (255, 255, 255))
 
 
-                    maske_start = time.perf_counter()
                     if class_id == 0:
-                        # Poligonu OpenCV formatına çevir ve içini doldur
                         pts = np.array(mask_pts, np.int32).reshape((-1, 1, 2))
                         cv2.fillPoly(overlay, [pts], color)
 
-                        maske_end = time.perf_counter()
-                        print(f"Maske İşleme Süresi: {(maske_end - maske_start) * 1000:.2f} ms")
 
             # HER İKİ SENARYO İÇİN ORTAK: Üst üste bindirme işlemi
             cv2.addWeighted(overlay, 0.4, annotated_frame, 0.6, 0, annotated_frame)
