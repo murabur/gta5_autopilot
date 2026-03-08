@@ -4,6 +4,7 @@ Kontrol/Algı
 - Ekrandaki en büyük trafik ışığının ayrı bir pencerede gösterilmesi                    - 7.03.2026 Yapıldı.
 - Trafik ışığı kontrolünün belli bir alana(karşı tarafa) sınırlandırılması
 - Opencv HSV ile kırmızı ve yeşil ışık tespiti
+- Temporal Smoothing eklenecek
 - Takip algoritması kullanılacak
 - Segmentasyon maskeleri ile arabalara yaklaşılıyor mu tespiti
 - Segmentasyon maskeleri ile sol şeritte araba var mı tespiti
