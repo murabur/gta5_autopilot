@@ -125,7 +125,7 @@ while True:
                     color = CLASS_COLORS.get(class_id, (255, 255, 255))
 
 
-                    if class_id == 0:
+                    if class_id == 0 or 1:
                         pts = np.array(mask_pts, np.int32).reshape((-1, 1, 2))
                         cv2.fillPoly(overlay, [pts], color)
 
@@ -165,10 +165,12 @@ while True:
             color = CLASS_COLORS.get(class_id, (0, 255, 0)) #CLASS_COLORS sözlüğünden class_id'ye göre sınıf rengini al 
             name = CLASS_NAMES.get(class_id, "Bilinmeyen")  #CLASS_NAMES sözlüğünden class_id'ye göre sınıf ismini al. 
 
-            if name != "road":
+            if name != "road" and name != "sidewalk":
                 cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), color, 2)
                 #sınıf isimlerini yazıyor
                 cv2.putText(annotated_frame, f"ID:{name} {conf:.2f}", (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                cv2.rectangle(annotated_frame)
+
             
 
 
