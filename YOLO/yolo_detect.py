@@ -50,16 +50,16 @@ def strip_letterbox(masks_data, target_h, target_w):
 def get_road_centerline(road_mask):
     #yol maskesinin her satırı için orta nokta hesaplaması yapar
 
-    heigth, width = road_mask.shape
-    center_points = [ ]
+    heigth, width = road_mask.shape #maskenin yükseklik ve genişlik değerleri alınıyor.
+    center_points = [ ]             #merkez noktası için boş liste
 
-    for y in range(int(heigth*0.3), heigth, 10):
-        row = road_mask[y,:]
-        white_pixels = np.where(row>0.5)[0]
+    for y in range(int(heigth*0.3), heigth, 10): #yüksekliğin 10'da 3'lük kısmından başlıyoruz. Yüksekliğin sonuna kadar 10'ar adımla gidiyoruz.
+        row = road_mask[y,:] #"Görüntünün y yüksekliğindeki tüm yatay piksellerini bir şerit olarak alıyoruz.
+        white_pixels = np.where(row>0.5)[0] #np.where tuple döndürür. Biz içindeki ilk elemanı(listeyi) alıyoruz.
 
         if len(white_pixels) > 0:
-            center_x = int(np.mean(white_pixels))
-            center_points.append((center_x, y))
+            center_x = int(np.mean(white_pixels)) #tek boyutlu numpy array içindeki değerlerin ortalaması alınır.
+            center_points.append((center_x, y)) #eşleştirilen koordinat çifti listeye tuple şeklinde eklenir.
 
     return center_points
 # ══════════════════════════════════════════════════════════════════════════════
@@ -148,12 +148,13 @@ while True:
                             temp_road_mask = np.zeros((target_h, target_w), dtype=np.uint8)
                             cv2.fillPoly(temp_road_mask, [pts], 255)
                             center_pts = get_road_centerline(temp_road_mask)
-
+                            #bu fonksiyon içinde tuple olan liste döndürüyor.
 
 
                             if len(center_pts) > 1:
                                 for i in range(len(center_pts) - 1 ):
                                     cv2.line(annotated_frame, center_pts[i], center_pts[i+1], (0, 255, 255), 2)
+                                    print(f"{center_pts[i]} - {center_pts[i+1]}")
 
 
             # HER İKİ SENARYO İÇİN ORTAK: Üst üste bindirme işlemi
