@@ -25,8 +25,8 @@ Otomatik sürüş
 
 # 8.03.2026
 ## 5. Geometrik dönüşümler
-    - cv2.warpPerspective
-    - cv2.getRotationMatrix2D
+    - cv2.warpPerspective           - 8.03.2026 Yapıldı. Detayına sitedeki dökümantasyonda girilecek.
+    - cv2.getRotationMatrix2D       - 8.03.2026 Yapıldı. Detayına sitedeki dökümantasyonda girilecek.       
     - cv2.getAffineTransform
     - cv2.getPerspectiveTransform
     - cv2.remap
