@@ -51,7 +51,7 @@ def kus_bakisini_uygula():
     M = cv2.getPerspectiveTransform(src_points, dst_points)
     result = cv2.warpPerspective(img, M, (width, height))
     
-    cv2.imshow("2. Mukemmel Kus Bakisi", result)
+    cv2.imshow("result", result)
     
     # Terminale asıl koduna kopyalayacağın değerleri bas
     print("\n--- ---")
