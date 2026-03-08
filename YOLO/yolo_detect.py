@@ -190,13 +190,17 @@ def draw_detections(results, current_frame):
             name = CLASS_NAMES.get(class_id, "Bilinmeyen")  #CLASS_NAMES sözlüğünden class_id'ye göre sınıf ismini al. 
 
             if name != "road" and name != "sidewalk":
-                cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), color, 2)
+                cv2.rectangle(current_frame, (x1, y1), (x2, y2), color, 2)
                 #sınıf isimlerini yazıyor
-                cv2.putText(annotated_frame, f"ID:{name} {conf:.2f}", (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                cv2.putText(current_frame, f"ID:{name} {conf:.2f}", (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
     return current_frame, best_light_roi
 
-    
+def copy_process(frame):
+    if frame is not None:
+         annotated_frame = frame.copy()
+         overlay = frame.copy() 
+    return annotated_frame, overlay
 
 while True:
     t0 = time.perf_counter()
@@ -205,9 +209,9 @@ while True:
 
     results = get_predictions(frame)
 
+    annotated_frame, overlay = copy_process(frame)
+
     if frame is not None:
-        annotated_frame = frame.copy()
-        overlay = frame.copy() 
         target_h, target_w = frame.shape[:2] # Bizim ekranın boyutu (720, 1280)
 
     annotated_frame = process_lane_data(results, target_h, target_w, annotated_frame, overlay)
