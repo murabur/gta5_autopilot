@@ -105,24 +105,8 @@ def get_predictions(source):
 
     return results
 
+def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
 
-while True:
-    #fps
-    t0 = time.perf_counter()
-
-    frame = screen_capture(camera, capture_area)
-    if frame is None: continue
-
-    results = get_predictions(frame)
-
-    if frame is not None:
-        annotated_frame = frame.copy()
-        overlay = frame.copy() 
-
-
-    target_h, target_w = frame.shape[:2] # Bizim ekranın boyutu (720, 1280)
-
-    # --- MASKE BOYAMA (SEGMENTASYON) ---
     if results.masks is not None:
             
             # 1. SENARYO: TensorRT (.engine) -> Matris (Data) ve Manuel Kırpma
@@ -130,8 +114,8 @@ while True:
                 raw_masks = results.masks.data.cpu().numpy()
                 classes_for_masks = results.boxes.cls.cpu().numpy().astype(int)
                 
-                stripped_masks, mask_h, mask_w = strip_letterbox(raw_masks, target_h, target_w)
-                
+                stripped_masks, mask_h, mask_w = strip_letterbox(raw_masks, target_h, target_w)      
+
                 for i, mask in enumerate(stripped_masks):
                     class_id = classes_for_masks[i]
                     color = CLASS_COLORS.get(class_id, (255, 255, 255))
@@ -168,6 +152,21 @@ while True:
 
             # HER İKİ SENARYO İÇİN ORTAK: Üst üste bindirme işlemi
             cv2.addWeighted(overlay, 0.4, annotated_frame, 0.6, 0, annotated_frame)
+    return annotated_frame # İşlenmiş kareyi geri gönderiyoruz
+
+while True:
+    t0 = time.perf_counter()
+    frame = screen_capture(camera, capture_area)
+    if frame is None: continue
+
+    results = get_predictions(frame)
+
+    if frame is not None:
+        annotated_frame = frame.copy()
+        overlay = frame.copy() 
+        target_h, target_w = frame.shape[:2] # Bizim ekranın boyutu (720, 1280)
+
+    frame = process_lane_data(results, target_h, target_w, annotated_frame, overlay)
 
     # --- KUTU ÇİZİMİ (DETECTION) ---
     if results.boxes is not None: #eğer sonuç None dönmüyorsa 
