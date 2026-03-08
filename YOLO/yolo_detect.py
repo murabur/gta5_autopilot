@@ -75,17 +75,24 @@ CLASS_COLORS = {
 # 3. ANA DÖNGÜ 
 # ══════════════════════════════════════════════════════════════════════════════
 
+def screen_capture(cam_obj, area):
+    frame = cam_obj.grab(region=area)
+    
+    if frame is None:
+        return None
+    return frame
+
 while True:
     t0 = time.perf_counter()
-    
-    frame = camera.grab(region=capture_area)
+    frame = screen_capture(camera, capture_area)
     if frame is None: continue
 
-    # Modelden tahminleri alıyoruz
-    results = model.predict(source=frame, conf=0.3, verbose=False)[0]
+    results = model.predict(source=frame, conf=0.3, verbose=False, half=True)[0]
 
-    annotated_frame = frame.copy()
-    overlay = frame.copy() 
+    if frame is not None:
+        annotated_frame = frame.copy()
+        overlay = frame.copy() 
+
 
     target_h, target_w = frame.shape[:2] # Bizim ekranın boyutu (720, 1280)
 
@@ -116,10 +123,16 @@ while True:
                         continue
                     class_id = classes_for_masks[i]
                     color = CLASS_COLORS.get(class_id, (255, 255, 255))
-                    
-                    # Poligonu OpenCV formatına çevir ve içini doldur
-                    pts = np.array(mask_pts, np.int32).reshape((-1, 1, 2))
-                    cv2.fillPoly(overlay, [pts], color)
+
+
+                    maske_start = time.perf_counter()
+                    if class_id == 0:
+                        # Poligonu OpenCV formatına çevir ve içini doldur
+                        pts = np.array(mask_pts, np.int32).reshape((-1, 1, 2))
+                        cv2.fillPoly(overlay, [pts], color)
+
+                        maske_end = time.perf_counter()
+                        print(f"Maske İşleme Süresi: {(maske_end - maske_start) * 1000:.2f} ms")
 
             # HER İKİ SENARYO İÇİN ORTAK: Üst üste bindirme işlemi
             cv2.addWeighted(overlay, 0.4, annotated_frame, 0.6, 0, annotated_frame)
@@ -156,10 +169,10 @@ while True:
             color = CLASS_COLORS.get(class_id, (0, 255, 0)) #CLASS_COLORS sözlüğünden class_id'ye göre sınıf rengini al 
             name = CLASS_NAMES.get(class_id, "Bilinmeyen")  #CLASS_NAMES sözlüğünden class_id'ye göre sınıf ismini al. 
 
-            cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), color, 2)
-
-            cv2.putText(annotated_frame, f"ID:{name} {conf:.2f}", (x1, y1-10), 
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            if name != "road":
+                cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), color, 2)
+                #sınıf isimlerini yazıyor
+                cv2.putText(annotated_frame, f"ID:{name} {conf:.2f}", (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
             
 
 
@@ -170,11 +183,13 @@ while True:
     t1 = time.perf_counter()
     fps = 1 / (t1-t0)
 
+
+    #f string .1f virgülden sonra bir basamak al.
     cv2.rectangle(frame, (5, 20), (170, 60), (0, 0, 0), -1)
     cv2.putText(img=frame, text=f"FPS: {fps:.1f}", org=(10, 50), 
                 fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 255, 0), thickness=2)
     
-    cv2.imshow("GTA 5 Autopilot", frame)
+    cv2.imshow("GTA 5 otopilot", frame)
 
     if best_light_roi is not None:
         display_roi = cv2.resize(best_light_roi, (200,400))
