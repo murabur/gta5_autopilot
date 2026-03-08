@@ -101,7 +101,7 @@ def screen_capture(cam_obj, area):
 
 def get_predictions(source):
 
-    results = model.predict(source=frame, conf=0.3, verbose=False, half=True)[0]
+    results = model.predict(source=source, conf=0.3, verbose=False, half=True)[0]
 
     return results
 
@@ -147,28 +147,17 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
                             if len(center_pts) > 1:
                                 for i in range(len(center_pts) - 1 ):
                                     cv2.line(annotated_frame, center_pts[i], center_pts[i+1], (0, 255, 255), 2)
-                                    print(f"{center_pts[i]} - {center_pts[i+1]}")
+                                    
 
 
             # HER İKİ SENARYO İÇİN ORTAK: Üst üste bindirme işlemi
             cv2.addWeighted(overlay, 0.4, annotated_frame, 0.6, 0, annotated_frame)
     return annotated_frame # İşlenmiş kareyi geri gönderiyoruz
 
-while True:
-    t0 = time.perf_counter()
-    frame = screen_capture(camera, capture_area)
-    if frame is None: continue
 
-    results = get_predictions(frame)
+def draw_detections(results, current_frame):
 
-    if frame is not None:
-        annotated_frame = frame.copy()
-        overlay = frame.copy() 
-        target_h, target_w = frame.shape[:2] # Bizim ekranın boyutu (720, 1280)
-
-    frame = process_lane_data(results, target_h, target_w, annotated_frame, overlay)
-
-    # --- KUTU ÇİZİMİ (DETECTION) ---
+        # --- KUTU ÇİZİMİ (DETECTION) ---
     if results.boxes is not None: #eğer sonuç None dönmüyorsa 
         boxes = results.boxes.xyxy.cpu().numpy().astype(int) #YOLO results'dan boxların x,y koordinatlarını CPU'ya ve numpy'a int formatında indir.
         classes = results.boxes.cls.cpu().numpy().astype(int) #YOLO results'dan boxların sınıflarını CPU'ya ve numpy'a int formatında indir
@@ -191,7 +180,7 @@ while True:
                 #eğer bu ışık hafızadakinden daha büyükse
                 if current_area > max_area:
                     max_area = current_area
-                    best_light_roi = frame[y1:y2, x1:x2].copy()
+                    best_light_roi = current_frame[y1:y2, x1:x2].copy()
                     
 
 
@@ -205,7 +194,26 @@ while True:
                 #sınıf isimlerini yazıyor
                 cv2.putText(annotated_frame, f"ID:{name} {conf:.2f}", (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
-    frame = annotated_frame 
+    return current_frame, best_light_roi
+
+    
+
+while True:
+    t0 = time.perf_counter()
+    frame = screen_capture(camera, capture_area)
+    if frame is None: continue
+
+    results = get_predictions(frame)
+
+    if frame is not None:
+        annotated_frame = frame.copy()
+        overlay = frame.copy() 
+        target_h, target_w = frame.shape[:2] # Bizim ekranın boyutu (720, 1280)
+
+    annotated_frame = process_lane_data(results, target_h, target_w, annotated_frame, overlay)
+
+    final_display , best_light_roi = draw_detections(results, annotated_frame)
+
 
     # --- FPS VE EKRAN ---
     t1 = time.perf_counter()
@@ -213,11 +221,10 @@ while True:
 
 
     #f string .1f virgülden sonra bir basamak al.
-    cv2.rectangle(frame, (5, 20), (170, 60), (0, 0, 0), -1)
-    cv2.putText(img=frame, text=f"FPS: {fps:.1f}", org=(10, 50), 
-                fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 255, 0), thickness=2)
+    cv2.rectangle(final_display, (5, 20), (170, 60), (0, 0, 0), -1)
+    cv2.putText(img=final_display, text=f"FPS: {fps:.1f}", org=(10, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 255, 0), thickness=2)
     
-    cv2.imshow("GTA 5 otopilot", frame)
+    cv2.imshow("GTA 5 otopilot", final_display)
 
     if best_light_roi is not None:
         display_roi = cv2.resize(best_light_roi, (200,400))
