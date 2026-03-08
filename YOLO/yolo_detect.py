@@ -88,10 +88,7 @@ CLASS_COLORS = {
     5: (0, 0, 255)      # traffic_light -   Kırmızı
 }
 
-# ══════════════════════════════════════════════════════════════════════════════
-# 3. ANA DÖNGÜ 
-# ══════════════════════════════════════════════════════════════════════════════
-
+#ekran kaydeden fonksiyon
 def screen_capture(cam_obj, area):
     frame = cam_obj.grab(region=area)
     
@@ -99,19 +96,21 @@ def screen_capture(cam_obj, area):
         return None
     return frame
 
+#tahmin yapan fonksiyon
 def get_predictions(source):
 
     results = model.predict(source=source, conf=0.3, verbose=False, half=True)[0]
 
     return results
 
+#maskeleri çizdiren fonksiyon
 def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
 
     if results.masks is not None:
             
             # 1. SENARYO: TensorRT (.engine) -> Matris (Data) ve Manuel Kırpma
             if MODEL_PATH.endswith(".engine"):
-                raw_masks = results.masks.data.cpu().numpy()
+                raw_masks = results.masks.data.cpu().numpy()   
                 classes_for_masks = results.boxes.cls.cpu().numpy().astype(int)
                 
                 stripped_masks, mask_h, mask_w = strip_letterbox(raw_masks, target_h, target_w)      
@@ -150,11 +149,11 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
                                     
 
 
-            # HER İKİ SENARYO İÇİN ORTAK: Üst üste bindirme işlemi
+            # Üst üste bindirme işlemi .engine ve .pt için ortak
             cv2.addWeighted(overlay, 0.4, annotated_frame, 0.6, 0, annotated_frame)
     return annotated_frame # İşlenmiş kareyi geri gönderiyoruz
 
-
+#bounding box çizen fonksiyon
 def draw_detections(results, current_frame):
 
         # --- KUTU ÇİZİMİ (DETECTION) ---

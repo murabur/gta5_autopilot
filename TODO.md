@@ -8,7 +8,8 @@ Kontrol/Algı
 - Takip algoritması kullanılacak
 - Segmentasyon maskeleri ile arabalara yaklaşılıyor mu tespiti
 - Segmentasyon maskeleri ile sol şeritte araba var mı tespiti
-- Yol maskesinin ortasına sanal şerit eklenecek
+- Yol maskesinin ortasına sanal şerit eklenecek  -8.03.2026 Yapıldı.
+- Sanal şeritin stabil hale getirilmesi gerekiyor.
 - Yol maskesine eklenen sanal şerit ile Opencv'den alınan şeritler birleştirilecek
 - Bu şeritten sapma oranı ekrana yazdırılacak
 - Road maskesinin üzerinde person var mı kontrolü yapılacak
@@ -29,7 +30,7 @@ Otomatik sürüş
 ## 5. Geometrik dönüşümler
     - cv2.warpPerspective           - 8.03.2026 Yapıldı. Detayına sitedeki dökümantasyonda girilecek.
     - cv2.getRotationMatrix2D       - 8.03.2026 Yapıldı. Detayına sitedeki dökümantasyonda girilecek.       
-    - cv2.getAffineTransform
+    - cv2.getAffineTransform 
     - cv2.getPerspectiveTransform
     - cv2.remap
 
