@@ -45,6 +45,23 @@ def strip_letterbox(masks_data, target_h, target_w):
     
     return masks_data, mask_h, mask_w
 
+
+
+def get_road_centerline(road_mask):
+    #yol maskesinin her satırı için orta nokta hesaplaması yapar
+
+    heigth, width = road_mask.shape
+    center_points = [ ]
+
+    for y in range(int(heigth*0.3), heigth, 10):
+        row = road_mask[y,:]
+        white_pixels = np.where(row>0.5)[0]
+
+        if len(white_pixels) > 0:
+            center_x = int(np.mean(white_pixels))
+            center_points.append((center_x, y))
+
+    return center_points
 # ══════════════════════════════════════════════════════════════════════════════
 # 2. ANA KURULUM
 # ══════════════════════════════════════════════════════════════════════════════
@@ -104,7 +121,6 @@ while True:
                 raw_masks = results.masks.data.cpu().numpy()
                 classes_for_masks = results.boxes.cls.cpu().numpy().astype(int)
                 
-                # Senin kusursuz çalışan fonksiyonun
                 stripped_masks, mask_h, mask_w = strip_letterbox(raw_masks, target_h, target_w)
                 
                 for i, mask in enumerate(stripped_masks):
@@ -125,9 +141,19 @@ while True:
                     color = CLASS_COLORS.get(class_id, (255, 255, 255))
 
 
-                    if class_id == 0 or 1:
+                    if class_id == 0 or class_id == 1:
                         pts = np.array(mask_pts, np.int32).reshape((-1, 1, 2))
                         cv2.fillPoly(overlay, [pts], color)
+                        if class_id == 0:
+                            temp_road_mask = np.zeros((target_h, target_w), dtype=np.uint8)
+                            cv2.fillPoly(temp_road_mask, [pts], 255)
+                            center_pts = get_road_centerline(temp_road_mask)
+
+
+
+                            if len(center_pts) > 1:
+                                for i in range(len(center_pts) - 1 ):
+                                    cv2.line(annotated_frame, center_pts[i], center_pts[i+1], (0, 255, 255), 2)
 
 
             # HER İKİ SENARYO İÇİN ORTAK: Üst üste bindirme işlemi
@@ -169,11 +195,6 @@ while True:
                 cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), color, 2)
                 #sınıf isimlerini yazıyor
                 cv2.putText(annotated_frame, f"ID:{name} {conf:.2f}", (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-                cv2.rectangle(annotated_frame)
-
-            
-
-
 
     frame = annotated_frame 
 
