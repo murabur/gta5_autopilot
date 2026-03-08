@@ -99,12 +99,21 @@ def screen_capture(cam_obj, area):
         return None
     return frame
 
+def get_predictions(source):
+
+    results = model.predict(source=frame, conf=0.3, verbose=False, half=True)[0]
+
+    return results
+
+
 while True:
+    #fps
     t0 = time.perf_counter()
+
     frame = screen_capture(camera, capture_area)
     if frame is None: continue
 
-    results = model.predict(source=frame, conf=0.3, verbose=False, half=True)[0]
+    results = get_predictions(frame)
 
     if frame is not None:
         annotated_frame = frame.copy()
