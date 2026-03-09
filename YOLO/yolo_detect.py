@@ -3,7 +3,6 @@
 
 #önemli not2: Kod CPU tarafında ciddi performans optimizasyonuna ihtiyaç duymaktadır.
 
-#önemli not3: Şuan .engine dosya uzantısında maske çizdirmiyor. Düzeltilecek.
 
 import bettercam
 import cv2
