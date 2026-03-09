@@ -21,8 +21,8 @@ while True:
 
     fps = 1 / (end_time - start_time)
 
-    print(f"FPS {fps:.1f}")
-
+    
+    cv2.putText(img=capture, text=f"FPS: {fps:.1f}", org=(10, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 255, 0), thickness=2)
     cv2.imshow("capture", capture)
 
     if cv2.waitKey(1) & 0xFF == ord("q"):
