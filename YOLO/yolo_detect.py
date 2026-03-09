@@ -67,21 +67,18 @@ def get_road_centerline(road_mask):
             center_points.append((center_x, y)) #eşleştirilen koordinat çifti listeye tuple şeklinde eklenir.
 
     return center_points
-# ══════════════════════════════════════════════════════════════════════════════
-# 2. ANA KURULUM
-# ══════════════════════════════════════════════════════════════════════════════
+
 
 # model ağırlık dosyası
 # https://drive.google.com/file/d/1TOzAy7CnA6YrCIa_EtZaS10lQ8-YKc5P/view?usp=sharing
-
-
-
 #.engine dosyaları derlendiği donanıma özeldir.Nvidia GPU'nuz varsa mutlaka .pt uzantılı pytorch dosyanızdan onnx formatına ardından .engine TensorRT formatına derlemeyi yapın.
 MODEL_PATH = r"YOLO\best.engine"
 model = YOLO(MODEL_PATH)
 
+#yakalama işlemleri
 camera = bettercam.create(output_color="BGR")
 capture_area = (0, 40, 1280, 760)
+
 
 CLASS_NAMES = {0: 'road', 1: 'sidewalk', 2: 'car', 3: 'motorcycle', 4: 'person', 5: 'traffic_light'}
 CLASS_COLORS = {
