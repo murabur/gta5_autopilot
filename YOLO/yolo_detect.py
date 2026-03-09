@@ -3,6 +3,8 @@
 
 #önemli not2: Kod CPU tarafında ciddi performans optimizasyonuna ihtiyaç duymaktadır.
 
+#önemli not3: Şuan .engine dosya uzantısında maske çizdirmiyor. Düzeltilecek.
+
 import bettercam
 import cv2
 import time
@@ -47,6 +49,8 @@ def strip_letterbox(masks_data, target_h, target_w):
 
 
 
+
+
 def get_road_centerline(road_mask):
     #yol maskesinin her satırı için orta nokta hesaplaması yapar
 
@@ -59,6 +63,7 @@ def get_road_centerline(road_mask):
 
         if len(white_pixels) > 0:
             center_x = int(np.mean(white_pixels)) #tek boyutlu numpy array içindeki değerlerin ortalaması alınır.
+
             center_points.append((center_x, y)) #eşleştirilen koordinat çifti listeye tuple şeklinde eklenir.
 
     return center_points
@@ -72,7 +77,7 @@ def get_road_centerline(road_mask):
 
 
 #.engine dosyaları derlendiği donanıma özeldir.Nvidia GPU'nuz varsa mutlaka .pt uzantılı pytorch dosyanızdan onnx formatına ardından .engine TensorRT formatına derlemeyi yapın.
-MODEL_PATH = r"YOLO\best.pt"
+MODEL_PATH = r"YOLO\best.engine"
 model = YOLO(MODEL_PATH)
 
 camera = bettercam.create(output_color="BGR")
@@ -110,7 +115,7 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
             
             # 1. SENARYO: TensorRT (.engine) -> Matris (Data) ve Manuel Kırpma
             if MODEL_PATH.endswith(".engine"):
-                raw_masks = results.masks.data.cpu().numpy()   
+                raw_masks = results.masks.data.cpu().numpy() 
                 classes_for_masks = results.boxes.cls.cpu().numpy().astype(int)
                 
                 stripped_masks, mask_h, mask_w = strip_letterbox(raw_masks, target_h, target_w)      
@@ -120,6 +125,7 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
                     color = CLASS_COLORS.get(class_id, (255, 255, 255))
                     mask_resized = cv2.resize(mask, (target_w, target_h), interpolation=cv2.INTER_NEAREST)
                     overlay[mask_resized > 0.5] = color
+
 
             # 2. SENARYO: PyTorch (.pt) -> Poligon (XY) ve Otomatik Hizalama
             elif MODEL_PATH.endswith(".pt"):
@@ -133,7 +139,7 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
                     color = CLASS_COLORS.get(class_id, (255, 255, 255))
 
 
-                    if class_id == 0 or class_id == 1:
+                    if class_id == 0 or class_id == 1 or class_id == 2:
                         pts = np.array(mask_pts, np.int32).reshape((-1, 1, 2))
                         cv2.fillPoly(overlay, [pts], color)
                         if class_id == 0:
@@ -150,7 +156,15 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
 
 
             # Üst üste bindirme işlemi .engine ve .pt için ortak
-            cv2.addWeighted(overlay, 0.4, annotated_frame, 0.6, 0, annotated_frame)
+            #src1 = ilk görüntü
+            #alpha = src1 ağırlığı
+            #src2 = ikinci görüntü
+            #beta = src2 ağırlığı
+            #gamma = sabit ek değer
+            #dst = sonuç yazılacak görüntü
+            #dst = src1 * alpha + src2 * beta + gamma
+            cv2.addWeighted(src1= overlay, alpha= 0.4, src2 = annotated_frame, beta= 0.6, gamma= 0, dst = annotated_frame)
+
     return annotated_frame # İşlenmiş kareyi geri gönderiyoruz
 
 #bounding box çizen fonksiyon
