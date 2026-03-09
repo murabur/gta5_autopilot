@@ -8,7 +8,7 @@ Kontrol/Algı
 - Takip algoritması kullanılacak
 - Segmentasyon maskeleri ile arabalara yaklaşılıyor mu tespiti
 - Segmentasyon maskeleri ile sol şeritte araba var mı tespiti
-- Yol maskesinin ortasına sanal şerit eklenecek  -8.03.2026 Yapıldı.
+- Yol maskesinin ortasına sanal şerit eklenecek  - 8.03.2026 Yapıldı.
 - Sanal şeritin stabil hale getirilmesi gerekiyor.
 - Yol maskesine eklenen sanal şerit ile Opencv'den alınan şeritler birleştirilecek
 - Bu şeritten sapma oranı ekrana yazdırılacak
