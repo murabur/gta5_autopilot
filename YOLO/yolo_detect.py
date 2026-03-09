@@ -73,7 +73,7 @@ def get_road_centerline(road_mask):
 # https://drive.google.com/file/d/1TOzAy7CnA6YrCIa_EtZaS10lQ8-YKc5P/view?usp=sharing
 #.engine dosyaları derlendiği donanıma özeldir.Nvidia GPU'nuz varsa mutlaka .pt uzantılı pytorch dosyanızdan onnx formatına ardından .engine TensorRT formatına derlemeyi yapın.
 MODEL_PATH = r"YOLO\best.engine"
-model = YOLO(MODEL_PATH)
+model = YOLO(MODEL_PATH, task="segment")
 
 #yakalama işlemleri
 camera = bettercam.create(output_color="BGR")
@@ -107,62 +107,71 @@ def get_predictions(source):
 
 #maskeleri çizdiren fonksiyon
 def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
-
     if results.masks is not None:
+        # 1. SENARYO: TensorRT (.engine) -> Matris (Data) ve Manuel Kırpma
+        if MODEL_PATH.endswith(".engine"):
+            raw_masks = results.masks.data.cpu().numpy()
+            print(f"raw_masks shape: {raw_masks.shape}")
+            print(f"raw_masks min: {raw_masks.min()}, max: {raw_masks.max()}")
+            classes_for_masks = results.boxes.cls.cpu().numpy().astype(int)
+            print(f"classes: {classes_for_masks}")
+
+
             
-            # 1. SENARYO: TensorRT (.engine) -> Matris (Data) ve Manuel Kırpma
-            if MODEL_PATH.endswith(".engine"):
-                raw_masks = results.masks.data.cpu().numpy() 
-                classes_for_masks = results.boxes.cls.cpu().numpy().astype(int)
-                
-                stripped_masks, mask_h, mask_w = strip_letterbox(raw_masks, target_h, target_w)      
+            # Letterbox padding'ini kırp
+            stripped_masks, mask_h, mask_w = strip_letterbox(raw_masks, target_h, target_w)      
 
-                for i, mask in enumerate(stripped_masks):
-                    class_id = classes_for_masks[i]
+            for i, mask in enumerate(stripped_masks):
+                class_id = classes_for_masks[i]
+                
+                # Sadece yol, kaldırım ve araç maskelerini işle
+                if class_id in [0, 1, 2]:
                     color = CLASS_COLORS.get(class_id, (255, 255, 255))
+                    
+                    # Maskeyi gerçek ekran boyutuna (1280x720) resize et
                     mask_resized = cv2.resize(mask, (target_w, target_h), interpolation=cv2.INTER_NEAREST)
-                    overlay[mask_resized > 0.5] = color
+                    mask_bool = mask_resized > 0.5
+                    
+                    # Renklendirmeyi overlay matrisine işle
+                    overlay[mask_bool] = color
+                    
+                    # EKSİK GİDERİLDİ: .engine senaryosunda yol merkezi (sarı şerit) çizimi
+                    if class_id == 0:
+                        temp_road_mask = np.zeros((target_h, target_w), dtype=np.uint8)
+                        temp_road_mask[mask_bool] = 255
+                        center_pts = get_road_centerline(temp_road_mask)
+                        
+                        if len(center_pts) > 1:
+                            for j in range(len(center_pts) - 1):
+                                cv2.line(annotated_frame, center_pts[j], center_pts[j+1], (0, 255, 255), 2)
 
+        # 2. SENARYO: PyTorch (.pt) -> Poligon (XY) ve Otomatik Hizalama
+        elif MODEL_PATH.endswith(".pt"):
+            masks_xy = results.masks.xy
+            classes_for_masks = results.boxes.cls.cpu().numpy().astype(int)
+            
+            for i, mask_pts in enumerate(masks_xy):
+                if len(mask_pts) == 0: continue
+                class_id = classes_for_masks[i]
+                color = CLASS_COLORS.get(class_id, (255, 255, 255))
 
-            # 2. SENARYO: PyTorch (.pt) -> Poligon (XY) ve Otomatik Hizalama
-            elif MODEL_PATH.endswith(".pt"):
-                masks_xy = results.masks.xy
-                classes_for_masks = results.boxes.cls.cpu().numpy().astype(int)
-                
-                for i, mask_pts in enumerate(masks_xy):
-                    if len(mask_pts) == 0: # Boş maske hatasını önle
-                        continue
-                    class_id = classes_for_masks[i]
-                    color = CLASS_COLORS.get(class_id, (255, 255, 255))
+                if class_id in [0, 1, 2]:
+                    pts = np.array(mask_pts, np.int32).reshape((-1, 1, 2))
+                    cv2.fillPoly(overlay, [pts], color)
+                    
+                    if class_id == 0:
+                        temp_road_mask = np.zeros((target_h, target_w), dtype=np.uint8)
+                        cv2.fillPoly(temp_road_mask, [pts], 255)
+                        center_pts = get_road_centerline(temp_road_mask)
 
+                        if len(center_pts) > 1:
+                            for j in range(len(center_pts) - 1):
+                                cv2.line(annotated_frame, center_pts[j], center_pts[j+1], (0, 255, 255), 2)
 
-                    if class_id == 0 or class_id == 1 or class_id == 2:
-                        pts = np.array(mask_pts, np.int32).reshape((-1, 1, 2))
-                        cv2.fillPoly(overlay, [pts], color)
-                        if class_id == 0:
-                            temp_road_mask = np.zeros((target_h, target_w), dtype=np.uint8)
-                            cv2.fillPoly(temp_road_mask, [pts], 255)
-                            center_pts = get_road_centerline(temp_road_mask)
-                            #bu fonksiyon içinde tuple olan liste döndürüyor.
+        # Üst üste bindirme işlemi her iki format için de burada gerçekleşir
+        cv2.addWeighted(src1=overlay, alpha=0.4, src2=annotated_frame, beta=0.6, gamma=0, dst=annotated_frame)
 
-
-                            if len(center_pts) > 1:
-                                for i in range(len(center_pts) - 1 ):
-                                    cv2.line(annotated_frame, center_pts[i], center_pts[i+1], (0, 255, 255), 2)
-                                    
-
-
-            # Üst üste bindirme işlemi .engine ve .pt için ortak
-            #src1 = ilk görüntü
-            #alpha = src1 ağırlığı
-            #src2 = ikinci görüntü
-            #beta = src2 ağırlığı
-            #gamma = sabit ek değer
-            #dst = sonuç yazılacak görüntü
-            #dst = src1 * alpha + src2 * beta + gamma
-            cv2.addWeighted(src1= overlay, alpha= 0.4, src2 = annotated_frame, beta= 0.6, gamma= 0, dst = annotated_frame)
-
-    return annotated_frame # İşlenmiş kareyi geri gönderiyoruz
+    return annotated_frame
 
 #bounding box çizen fonksiyon
 def draw_detections(results, current_frame):
