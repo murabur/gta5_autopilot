@@ -71,7 +71,7 @@ def get_road_centerline(road_mask):
 # model ağırlık dosyası
 # https://drive.google.com/file/d/1TOzAy7CnA6YrCIa_EtZaS10lQ8-YKc5P/view?usp=sharing
 #.engine dosyaları derlendiği donanıma özeldir.Nvidia GPU'nuz varsa mutlaka .pt uzantılı pytorch dosyanızdan onnx formatına ardından .engine TensorRT formatına derlemeyi yapın.
-MODEL_PATH = r"YOLO\best.engine"
+MODEL_PATH = r"YOLO\best.pt"
 model = YOLO(MODEL_PATH, task="segment")
 
 #yakalama işlemleri
@@ -100,9 +100,8 @@ def screen_capture(cam_obj, area):
 #tahmin yapan fonksiyon
 def get_predictions(source):
 
-    results = model.predict(source=source, conf=0.3, verbose=False, half=True)[0]
-
-    return results
+    results = model.predict(source=source, conf=0.3, verbose=False, half=True, stream=True)
+    return next(results)
 
 #maskeleri çizdiren fonksiyon
 def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
@@ -110,11 +109,8 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
         # 1. SENARYO: TensorRT (.engine) -> Matris (Data) ve Manuel Kırpma
         if MODEL_PATH.endswith(".engine"):
             raw_masks = results.masks.data.cpu().numpy()
-            print(f"raw_masks shape: {raw_masks.shape}")
-            print(f"raw_masks min: {raw_masks.min()}, max: {raw_masks.max()}")
             classes_for_masks = results.boxes.cls.cpu().numpy().astype(int)
-            print(f"classes: {classes_for_masks}")
-
+          
 
             
             # Letterbox padding'ini kırp
@@ -214,7 +210,7 @@ def draw_detections(results, current_frame):
 
     return current_frame, best_light_roi
 
-def copy_process(frame):
+#def copy_process(frame):
     if frame is not None:
          annotated_frame = frame.copy()
          overlay = frame.copy() 
@@ -227,7 +223,8 @@ while True:
 
     results = get_predictions(frame)
 
-    annotated_frame, overlay = copy_process(frame)
+    #annotated_frame, overlay = copy_process(frame)
+    annotated_frame = frame
 
     if frame is not None:
         target_h, target_w = frame.shape[:2] # Bizim ekranın boyutu (720, 1280)
