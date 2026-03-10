@@ -216,6 +216,14 @@ def draw_detections(results, current_frame):
          overlay = frame.copy() 
     return annotated_frame, overlay
 
+
+
+target_h = 720
+target_w = 1280
+
+global_overlay = np.zeros((target_h, target_w, 3), dtype=np.uint8)
+
+
 while True:
     t0 = time.perf_counter()
     frame = screen_capture(camera, capture_area)
@@ -223,33 +231,29 @@ while True:
 
     results = get_predictions(frame)
 
-    #annotated_frame, overlay = copy_process(frame)
     annotated_frame = frame
 
-    if frame is not None:
-        target_h, target_w = frame.shape[:2] # Bizim ekranın boyutu (720, 1280)
+    # Statik matrisi siyah piksellerle sıfırla
+    global_overlay.fill(0)
 
-    annotated_frame = process_lane_data(results, target_h, target_w, annotated_frame, overlay)
+    # DİKKAT: Parametre global_overlay olarak güncellendi
+    annotated_frame = process_lane_data(results, target_h, target_w, annotated_frame, global_overlay)
 
-    final_display , best_light_roi = draw_detections(results, annotated_frame)
-
+    final_display, best_light_roi = draw_detections(results, annotated_frame)
 
     # --- FPS VE EKRAN ---
     t1 = time.perf_counter()
-    fps = 1 / (t1-t0)
+    fps = 1 / (t1 - t0)
 
-
-    #f string .1f virgülden sonra bir basamak al.
     cv2.rectangle(final_display, (5, 20), (170, 60), (0, 0, 0), -1)
     cv2.putText(img=final_display, text=f"FPS: {fps:.1f}", org=(10, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 255, 0), thickness=2)
     
     cv2.imshow("GTA 5 otopilot", final_display)
 
     if best_light_roi is not None:
-        display_roi = cv2.resize(best_light_roi, (200,400))
+        display_roi = cv2.resize(best_light_roi, (200, 400))
         cv2.imshow("En Yakin Isik", display_roi)
-    else:
-        pass
+        
     if cv2.waitKey(1) & 0xFF == ord('q'): break
 
 cv2.destroyAllWindows()
