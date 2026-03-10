@@ -1,0 +1,53 @@
+Bu liste görüntü işleme için gerekli konuları kapsamaktadır. Numpy kütüphanesinin tamamı değildir.
+
+- NumPy nedir
+- Python list vs NumPy array
+- ndarray veri yapısı
+- dtype kavramı
+- shape, ndim, size
+- Array oluşturma (array, zeros, ones, full)
+- arange ve linspace
+- Random array oluşturma
+- Array boyutlarını anlama
+- reshape
+- flatten ve ravel
+- transpose
+- Temel indexing
+- Çok boyutlu indexing
+- Slicing
+- Fancy indexing
+- Boolean indexing
+- Array matematiği (element-wise işlemler)
+- Scalar işlemleri
+- Vectorized işlemler
+- Broadcasting nedir
+- Broadcasting kuralları
+- Broadcasting örnekleri
+- Axis kavramı
+- Axis ile işlemler (sum, mean vb.)
+- İstatistik fonksiyonları (mean, std, var, min, max)
+- Array manipülasyonu (concatenate, stack, split)
+- Linear algebra
+- Dot product
+- Matrix multiplication
+- Transpose
+- Inverse ve determinant
+- Random modülü
+- Uniform dağılım
+- Normal dağılım
+- NumPy performansı ve vectorization
+- Memory modeli
+- Views vs copies
+- Universal functions (ufunc)
+- NumPy hataları
+- Shape uyuşmazlığı
+- Broadcasting hataları
+- Ragged arrays
+- NumPy ve görüntü verisi
+- Görüntünün NumPy array olarak temsil edilmesi
+- Pixel manipülasyonu
+- Renk kanalları
+- NumPy ile mini projeler
+- Histogram hesaplama
+- Basit görüntü filtreleri
+- Mask işlemleri
