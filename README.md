@@ -1,17 +1,33 @@
 # GTA V Otopilot
 
 
-Bu projenin amacı GTA 5'de Autopilot yaparken görüntü işleme ve yapay zeka tekniklerini incelemektir.
+GTA V içerisinde görüntü işleme ve yapay zeka teknikleri kullanarak otomatik sürüş sistemi geliştirme projesi.
+
+Bu repo aynı zamanda Computer Vision, NumPy ve OpenCV öğrenme sürecinin teknik notlarını ve deneylerini içermektedir.
+Önemli not: Ciddi bir iddiam bulunmamaktadır. Bu proje hobi projesi seviyesindedir ve öğrenme odaklıdır.
+
+
 
 ### 🌐 Bağlantılar & Sosyal Medya
 [![Website](https://img.shields.io/badge/Web_Sitem-muratburc.com-blue?style=for-the-badge&logo=google-chrome&logoColor=white)](https://muratburc.com/)
 [![YouTube Ana Kanal](https://img.shields.io/badge/YouTube-Murat_Burç-red?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@muratburc)
 [![YouTube Destek](https://img.shields.io/badge/YouTube-Murat_Burç_Tech-red?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/channel/UCcgArUBkEnL3s2F6M7OuWYw)
 
-Çok önemli not: Aşağıdaki plan kesinlik ifade etmemektedir ve "hedef" seviyesindedir. Bu konuların tamamına hakim değilim. Nihai amacım bu konuları öğrenmek ve size doğru şekilde aktarabilmek.
+
+## Amaç
+
+Bu projenin amacı:
+
+- görüntü işleme tekniklerini öğrenmek
+- Computer Vision algoritmalarını uygulamak
+- gerçek zamanlı bir autopilot sistemi geliştirmek
+
 
 ## 📖 Proje Günlüğü
 Projenin gelişim sürecindeki tüm teknik detayları ve kararları öğrenmek için [CHANGELOG.md](./CHANGELOG.md) dosyasını inceleyebilirsiniz.
+
+
+Çok önemli not: Aşağıdaki plan kesinlik ifade etmemektedir ve "hedef" seviyesindedir. Bu konuların tamamına hakim değilim. Nihai amacım bu konuları öğrenmek ve size doğru şekilde aktarabilmek.
 
 ## Planlanan video yol haritası(değişme ihtimali her zaman için mevcut)
 
