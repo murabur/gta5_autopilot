@@ -4,3 +4,4 @@
 
 - 8.03.2026 road(id = 0) maskesinin orta noktasını hesaplayıp sanal şerit çizen get_road_centerline(road_mask) fonksiyonu eklendi. Daha stabil hale getirilmesi gerekiyor.
 
+- 10.03.2026 [Numpy Dosyası](./Bolum_1_Temeller\Video_1.2_Numpy\0_numpy_dosyasi.ipynb) eklendi.
