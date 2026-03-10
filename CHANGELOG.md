@@ -6,6 +6,8 @@ Bu dosya projenin geliştirme sürecindeki teknik ilerlemeleri ve yapılan deney
 - [NumPy dosyası](./Bolum_1_Temeller/Video_1.2_Numpy/0_numpy_dosyasi.ipynb) eklendi.
 - Numpy'a başlangıç yapıldı.
 - [NumPy array oluşturma yöntemleri](./Bolum_1_Temeller/Video_1.2_Numpy/1_numpy_array_olusturma.ipynb)
+-  [OpenCV aritmetik ve bitwise işlemleri ](./Bolum_1_Temeller\Video_1.3_OpenCV\6_aritmetik_bitwise.ipynb) cv2.add fonksiyonu gösterildi. Numpy ile arasındaki overflow vs saturation farkı gösterildi.
+
 
 
 ## 2026-03-08
