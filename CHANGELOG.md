@@ -7,7 +7,8 @@ Bu dosya projenin geliştirme sürecindeki teknik ilerlemeleri ve yapılan deney
 - Numpy'a başlangıç yapıldı.
 - [NumPy array oluşturma yöntemleri](./Bolum_1_Temeller/Video_1.2_Numpy/1_numpy_array_olusturma.ipynb)
 -  [OpenCV aritmetik ve bitwise işlemleri ](./Bolum_1_Temeller\Video_1.3_OpenCV\6_aritmetik_bitwise.ipynb) cv2.add fonksiyonu gösterildi. Numpy ile arasındaki overflow vs saturation farkı gösterildi.
-
+- [yolo_detect_v2 ](./YOLO/yolo_detect_v2.py) eklendi. Performans ciddi manada (14 - 18 FPS -> 30 FPS) arttırıldı.
+ 
 
 
 ## 2026-03-08
