@@ -4,6 +4,7 @@ Bu dosya projenin geliştirme sürecindeki teknik ilerlemeleri ve yapılan deney
 
 ## 2026-03-10
 - [NumPy dosyası](./Bolum_1_Temeller/Video_1.2_Numpy/0_numpy_dosyasi.ipynb) eklendi.
+- Numpy'a başlangıç yapıldı.
 
 ## 2026-03-08
 - road (id=0) segmentation maskesinin orta noktasını hesaplayan `get_road_centerline(road_mask)` fonksiyonu eklendi.
