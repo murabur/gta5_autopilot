@@ -71,7 +71,7 @@ def get_road_centerline(road_mask):
 # model ağırlık dosyası
 # https://drive.google.com/file/d/1TOzAy7CnA6YrCIa_EtZaS10lQ8-YKc5P/view?usp=sharing
 #.engine dosyaları derlendiği donanıma özeldir.Nvidia GPU'nuz varsa mutlaka .pt uzantılı pytorch dosyanızdan onnx formatına ardından .engine TensorRT formatına derlemeyi yapın.
-MODEL_PATH = r"YOLO\best.pt"
+MODEL_PATH = r"YOLO\best.engine"
 model = YOLO(MODEL_PATH, task="segment")
 
 #yakalama işlemleri
@@ -225,11 +225,16 @@ global_overlay = np.zeros((target_h, target_w, 3), dtype=np.uint8)
 
 
 while True:
+
+
     t0 = time.perf_counter()
     frame = screen_capture(camera, capture_area)
     if frame is None: continue
 
+    time_predict_0 = time.perf_counter()
     results = get_predictions(frame)
+    time_predict_1 = time.perf_counter()
+
 
     annotated_frame = frame
 
@@ -237,9 +242,15 @@ while True:
     global_overlay.fill(0)
 
     # DİKKAT: Parametre global_overlay olarak güncellendi
-    annotated_frame = process_lane_data(results, target_h, target_w, annotated_frame, global_overlay)
 
+    mask_time_0 = time.perf_counter()
+    annotated_frame = process_lane_data(results, target_h, target_w, annotated_frame, global_overlay)
+    mask_time_1 = time.perf_counter()
+
+    box_time_0 = time.perf_counter()
     final_display, best_light_roi = draw_detections(results, annotated_frame)
+    box_time_1 = time.perf_counter()
+
 
     # --- FPS VE EKRAN ---
     t1 = time.perf_counter()
@@ -247,6 +258,13 @@ while True:
 
     cv2.rectangle(final_display, (5, 20), (170, 60), (0, 0, 0), -1)
     cv2.putText(img=final_display, text=f"FPS: {fps:.1f}", org=(10, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 255, 0), thickness=2)
+    cv2.putText(img=final_display, text=f"Predict: {(time_predict_1 - time_predict_0)*1000:3f} ms" , org=(10, 80), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 255, 0), thickness=2)
+
+    cv2.putText(img=final_display, text=f"Mask: {(mask_time_1 - mask_time_0)*1000:3f} ms", org=(10, 120), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 255, 0), thickness=2)
+
+    cv2.putText(img=final_display, text=f"Box: {(box_time_1 - box_time_0)*1000:3f} ms", org=(10, 160), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 255, 0), thickness=2)
+
+
     
     cv2.imshow("GTA 5 otopilot", final_display)
 
