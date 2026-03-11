@@ -11,9 +11,11 @@ def correct_polygon_padding(masks_xy, target_h, target_w, model_img_size=640):
     """
     Poligon (XY) koordinatlarındaki letterbox padding kaymasını vektörel olarak düzeltir.
     """
-    scale = min(model_img_size / target_h, model_img_size / target_w)
-    pad_y = (model_img_size - target_h * scale) / 2
-    pad_x = (model_img_size - target_w * scale) / 2
+    #target_h = 720 - target_w = 1280
+    #640/720 - 640/1280 = 
+    scale = min(model_img_size / target_h, model_img_size / target_w) #scale = 640/1280=  0,5
+    pad_y = (model_img_size - target_h * scale) / 2 #640 - 720*0.5 = 280 -> 280/2 = 140. Alttan üstten 140 pixel paddind
+    pad_x = (model_img_size - target_w * scale) / 2 #640 - 1280*0.5 = 0
 
     corrected_masks = []
     for pts in masks_xy:
@@ -89,7 +91,7 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
             if len(mask_pts) == 0: continue
             class_id = classes_for_masks[i]
             
-            if class_id in [0, 1, 2]:
+            if class_id in [0, 1, 2,5]:
                 color = CLASS_COLORS.get(class_id, (255, 255, 255))
                 # Sadece numpy array'e ve int32'ye çevirme işlemi yeterlidir
                 pts = np.array(mask_pts, np.int32).reshape((-1, 1, 2))
