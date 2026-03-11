@@ -6,7 +6,7 @@ Bu liste NumPy kullanımının yaklaşık %80–90'ını kapsar.
 ---
 
 # 1. NumPy Temelleri
-
+                                                            
 | Kavram | Açıklama |
 |------|------|
 | ndarray | NumPy'nin temel veri yapısı |
@@ -21,20 +21,19 @@ Bu liste NumPy kullanımının yaklaşık %80–90'ını kapsar.
 
 # 2. Array Oluşturma
 
-| Fonksiyon | Ne Yapıyor |
-|------|------|
-| `np.array()` | Python listeden array oluşturur |
-| `np.zeros()` | Sıfırlardan oluşan array |
-| `np.ones()` | Birlerden oluşan array |
-| `np.full()` | Sabit değerli array |
-| `np.zeros_like()` | Var olan array boyutunda sıfır array |
-| `np.ones_like()` | Var olan array boyutunda bir array |
-| `np.arange()` | Aralık üretir |
-| `np.linspace()` | Belirli sayıda eşit aralıklı değer |
-| `np.eye()` | Identity matrix |
-| `np.identity()` | Identity matrix |
-| `np.diag()` | Diagonal oluşturur / okur |
-
+| Fonksiyon | Ne Yapıyor | Dosya
+|------|------|------|
+| `np.array()` | Python listeden array oluşturur | [Numpy Array Oluşturma](./2_numpy_array_olusturma.ipynb)
+| `np.zeros()` | Sıfırlardan oluşan array |[Numpy Array Oluşturma](./2_numpy_array_olusturma.ipynb)
+| `np.ones()` | Birlerden oluşan array |[Numpy Array Oluşturma](./2_numpy_array_olusturma.ipynb)
+| `np.full()` | Sabit değerli array |[Numpy Array Oluşturma](./2_numpy_array_olusturma.ipynb)
+| `np.zeros_like()` | Var olan array boyutunda sıfır array |[Numpy Array Oluşturma](./2_numpy_array_olusturma.ipynb)
+| `np.ones_like()` | Var olan array boyutunda bir array |[Numpy Array Oluşturma](./2_numpy_array_olusturma.ipynb)
+| `np.arange()` | Aralık üretir |[Numpy Array Oluşturma](./2_numpy_array_olusturma.ipynb)
+| `np.linspace()` | Belirli sayıda eşit aralıklı değer |[Numpy Array Oluşturma](./2_numpy_array_olusturma.ipynb)
+| `np.eye()` | Birim matris|[Numpy Array Oluşturma](./2_numpy_array_olusturma.ipynb)
+| `np.identity()` | Birim matris ama yalnızca kare|[Numpy Array Oluşturma](./2_numpy_array_olusturma.ipynb)
+| `np.diag()` | Diagonal oluşturur / okur |[Numpy Array Oluşturma](./2_numpy_array_olusturma.ipynb)
 ---
 
 # 3. Indexing ve Slicing
