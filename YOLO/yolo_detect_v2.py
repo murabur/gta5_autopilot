@@ -174,7 +174,7 @@ while True:
     cv2.putText(final_display, f"Mask: {(mask_time_1 - mask_time_0)*1000:.1f} ms", (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
     cv2.putText(final_display, f"Box: {(box_time_1 - box_time_0)*1000:.1f} ms", (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
     
-    cv2.imshow("Otopilot Sistemi", final_display)
+    cv2.imshow("final_display", final_display)
 
     if best_light_roi is not None and best_light_roi.size > 0:
         display_roi = cv2.resize(best_light_roi, (200, 400))
