@@ -4,6 +4,8 @@ import time
 import numpy as np
 from ultralytics import YOLO
 
+prev_center_pts = None
+
 # ══════════════════════════════════════════════════════════════════════════════
 # 1. YARDIMCI FONKSİYONLAR
 # ══════════════════════════════════════════════════════════════════════════════
@@ -71,17 +73,25 @@ global_overlay = np.zeros((target_h, target_w, 3), dtype=np.uint8)
 # ══════════════════════════════════════════════════════════════════════════════
 # 3. İŞLEM FONKSİYONLARI
 # ══════════════════════════════════════════════════════════════════════════════
+
+
+#ekran yakalama fonksiyonu
 def screen_capture(cam_obj, area):
     frame = cam_obj.grab(region=area)
     if frame is None:
         return None
     return frame
 
+#tahmin fonksiyonu
 def get_predictions(source):
     results = model.predict(source=source, conf=0.3, verbose=False, half=True, stream=True)
     return next(results)
 
+
+
+#maske işlemleri
 def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
+    global prev_center_pts
     if results.masks is not None:
         raw_masks_xy = results.masks.xy
         classes_for_masks = results.boxes.cls.cpu().numpy().astype(int)
@@ -95,21 +105,36 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
                 color = CLASS_COLORS.get(class_id, (255, 255, 255))
                 # Sadece numpy array'e ve int32'ye çevirme işlemi yeterlidir
                 pts = np.array(mask_pts, np.int32).reshape((-1, 1, 2))
-                
+                #pts numpy array
                 cv2.fillPoly(overlay, [pts], color)
                 
                 if class_id == 0:
                     temp_road_mask = np.zeros((target_h, target_w), dtype=np.uint8)
                     cv2.fillPoly(temp_road_mask, [pts], 255)
-                    center_pts = get_road_centerline(temp_road_mask)
 
-                    if len(center_pts) > 1:
-                        for j in range(len(center_pts) - 1):
-                            cv2.line(annotated_frame, center_pts[j], center_pts[j+1], (0, 255, 255), 2)
+                    current_center_pts = get_road_centerline(temp_road_mask)
+                    if prev_center_pts is not None and len(current_center_pts) == len(prev_center_pts):
+                        smoothed_pts = []
+                        for curr, prev in zip(current_center_pts, prev_center_pts):
+                            # %70 eski konum, %30 yeni konum (Titreşimi öldürür)
+                            new_x = int(prev[0] * 0.7 + curr[0] * 0.3)
+                            new_y = curr[1] # Y ekseni genelde sabit adım olduğu için değişmez
+                            smoothed_pts.append((new_x, new_y))
+                        current_center_pts = smoothed_pts
+                    
+                    # 3. Bir sonraki kare için sakla
+                    prev_center_pts = current_center_pts
+
+                    # Çizim (Artık yumuşatılmış noktaları çiziyoruz)
+                    if len(current_center_pts) > 1:
+                        for j in range(len(current_center_pts) - 1):
+                            cv2.line(annotated_frame, current_center_pts[j], current_center_pts[j+1], (0, 255, 255), 2)
 
         cv2.addWeighted(src1=overlay, alpha=0.4, src2=annotated_frame, beta=0.6, gamma=0, dst=annotated_frame)
 
+
     return annotated_frame
+
 
 def draw_detections(results, current_frame):
     best_light_roi = None 
@@ -142,6 +167,8 @@ def draw_detections(results, current_frame):
 # ══════════════════════════════════════════════════════════════════════════════
 # 4. ANA DÖNGÜ
 # ══════════════════════════════════════════════════════════════════════════════
+
+
 while True:
     t0 = time.perf_counter()
     
