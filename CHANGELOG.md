@@ -1,6 +1,12 @@
 # CHANGELOG
 
 Bu dosya projenin geliştirme sürecindeki teknik ilerlemeleri ve yapılan deneyleri kaydetmek amacıyla tutulmaktadır.
+
+## 2026-03-10
+- [NumPy indexing ve slicing ](./Bolum_1_Temeller/Video_1.2_Numpy/3_1_numpy_indexing_slicing.ipynb) konusuna eklemeler yapıldı.
+- [NumPy indexing ve slicing Computer Vision ](./Bolum_1_Temeller/Video_1.2_Numpy/3_2_numpy_slicing_cv.ipynb) konusunda çalışma yapıldı
+
+
 ## 2026-03-11
 - [NumPy ndarray](./Bolum_1_Temeller/Video_1.2_Numpy/1_numpy_ndarray.ipynb) eklendi
 - [NumPy array oluşturma](./Bolum_1_Temeller/Video_1.2_Numpy/2_numpy_array_olusturma.ipynb) eklendi
