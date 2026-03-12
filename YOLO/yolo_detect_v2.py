@@ -33,17 +33,24 @@ def correct_polygon_padding(masks_xy, target_h, target_w, model_img_size=640):
         
     return corrected_masks
 
+#yolun orta noktasını alır, bir listeye ekler ve listeyi döndürür.
 def get_road_centerline(road_mask):
-    heigth, width = road_mask.shape
-    center_points = []
 
-    for y in range(int(heigth*0.3), heigth, 10):
-        row = road_mask[y,:]
-        white_pixels = np.where(row>0.5)[0]
+    heigth, width = road_mask.shape     #yükseklik, genişlik bilgisini yol maskesinden alır.
+    center_points = []                  #merkez noktaları için boş liste
 
+    for y in range(int(heigth*0.3), heigth, 10):    #yüksekliğin 0.3'ünden itibaren sonuna kadar her 10 adımda bir
+        row = road_mask[y,:] #y = height , bütün x satırını = width al
+
+        #row > 0.5 yol maskesinin ihtimal değeri(confidence değil) 0.5ten büyük olanları al.
+        #np.where(row > 0.5) bu ihtimale sahip piksellerin koordinatlarını döndür
+        #[0] np.where tuple döndürür. tuple'ın ilk elemanını almalıyız.
+        white_pixels = np.where(row>0.5)[0] 
+
+        #eğer white_pixels değeri 0'dan büyükse 
         if len(white_pixels) > 0:
-            center_x = int(np.mean(white_pixels))
-            center_points.append((center_x, y))
+            center_x = int(np.mean(white_pixels))   #noktaların ortalamasını al
+            center_points.append((center_x, y))     #merkez noktasını listeye ekle
 
     return center_points
 
@@ -53,6 +60,7 @@ def get_road_centerline(road_mask):
 MODEL_PATH = r"YOLO\best.engine"
 model = YOLO(MODEL_PATH, task="segment")
 
+#camera işlemleri
 camera = bettercam.create(output_color="BGR")
 capture_area = (0, 40, 1280, 760)
 
@@ -94,28 +102,30 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
     global prev_center_pts
 
 
-    if results.masks is not None:                                        #eğer maskeler None dönmediyse
-        raw_masks_xy = results.masks.xy                                  #ultralytics kütüphanesinden dönen poligon koordinatlarını raw_masks_xy'e ata
-        classes_for_masks = results.boxes.cls.cpu().numpy().astype(int)  #sınıf idlerini int şeklinde classes_for_masks'a ata
+    if results.masks is not None:                                           #eğer maskeler None dönmediyse
+        raw_masks_xy = results.masks.xy                                     #ultralytics kütüphanesinden dönen poligon koordinatlarını raw_masks_xy'e ata
+        classes_for_masks = results.boxes.cls.cpu().numpy().astype(int)     #sınıf idlerini int şeklinde classes_for_masks'a ata
         
         # correct_polygon_padding ÇIKARILDI. Doğrudan raw_masks_xy kullanılıyor.
         for i, mask_pts in enumerate(raw_masks_xy):
-            if len(mask_pts) == 0: continue #eğer maske uzunluğu sıfır ise işlem yapmadan devam et.
-            class_id = classes_for_masks[i] #sınıf idleri class_id değişkenine atanıyor.
+            if len(mask_pts) == 0: continue                                 #eğer maske uzunluğu sıfır ise işlem yapmadan devam et.
+            class_id = classes_for_masks[i]                                 #sınıf idleri class_id değişkenine atanıyor.
             
-            if class_id in [0, 1, 2,5]: #road, sidewalk, car, traffic_light
-                color = CLASS_COLORS.get(class_id, (255, 255, 255)) #class_id'ye göre renk atanıyor, yoksa beyaz.
+            if class_id in [0, 1, 2,5]:                                     #road, sidewalk, car, traffic_light
+                color = CLASS_COLORS.get(class_id, (255, 255, 255))         #class_id'ye göre renk atanıyor, yoksa beyaz.
 
                 # Sadece numpy array'e ve int32'ye çevirme işlemi yeterlidir
-                pts = np.array(mask_pts, np.int32).reshape((-1, 1, 2)) # Ham veri sekli: (78, 2) Reshape sonrasi seki: (78, 1, 2)
+                pts = np.array(mask_pts, np.int32).reshape((-1, 1, 2))      # Ham veri sekli: (78, 2) Reshape sonrasi seki: (78, 1, 2)
 
-                cv2.fillPoly(overlay, [pts], color)
+                cv2.fillPoly(overlay, [pts], color)                         #overlay nesnesine [pts] koordinatlarında color rengini doldur.
                 
-                if class_id == 0:
-                    temp_road_mask = np.zeros((target_h, target_w), dtype=np.uint8)
+                if class_id == 0:                                           #0 = road maskesi 
+                    temp_road_mask = np.zeros((target_h, target_w), dtype=np.uint8) #
                     cv2.fillPoly(temp_road_mask, [pts], 255)
 
                     current_center_pts = get_road_centerline(temp_road_mask)
+
+                    #temporal smoothing
                     if prev_center_pts is not None and len(current_center_pts) == len(prev_center_pts):
                         smoothed_pts = []
                         for curr, prev in zip(current_center_pts, prev_center_pts):
