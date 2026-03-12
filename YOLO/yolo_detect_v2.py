@@ -92,20 +92,23 @@ def get_predictions(source):
 #maske işlemleri
 def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
     global prev_center_pts
-    if results.masks is not None:
-        raw_masks_xy = results.masks.xy
-        classes_for_masks = results.boxes.cls.cpu().numpy().astype(int)
+
+
+    if results.masks is not None:                                        #eğer maskeler None dönmediyse
+        raw_masks_xy = results.masks.xy                                  #ultralytics kütüphanesinden dönen poligon koordinatlarını raw_masks_xy'e ata
+        classes_for_masks = results.boxes.cls.cpu().numpy().astype(int)  #sınıf idlerini int şeklinde classes_for_masks'a ata
         
         # correct_polygon_padding ÇIKARILDI. Doğrudan raw_masks_xy kullanılıyor.
         for i, mask_pts in enumerate(raw_masks_xy):
-            if len(mask_pts) == 0: continue
-            class_id = classes_for_masks[i]
+            if len(mask_pts) == 0: continue #eğer maske uzunluğu sıfır ise işlem yapmadan devam et.
+            class_id = classes_for_masks[i] #sınıf idleri class_id değişkenine atanıyor.
             
-            if class_id in [0, 1, 2,5]:
-                color = CLASS_COLORS.get(class_id, (255, 255, 255))
+            if class_id in [0, 1, 2,5]: #road, sidewalk, car, traffic_light
+                color = CLASS_COLORS.get(class_id, (255, 255, 255)) #class_id'ye göre renk atanıyor, yoksa beyaz.
+
                 # Sadece numpy array'e ve int32'ye çevirme işlemi yeterlidir
-                pts = np.array(mask_pts, np.int32).reshape((-1, 1, 2))
-                #pts numpy array
+                pts = np.array(mask_pts, np.int32).reshape((-1, 1, 2)) # Ham veri sekli: (78, 2) Reshape sonrasi seki: (78, 1, 2)
+
                 cv2.fillPoly(overlay, [pts], color)
                 
                 if class_id == 0:
@@ -116,7 +119,7 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
                     if prev_center_pts is not None and len(current_center_pts) == len(prev_center_pts):
                         smoothed_pts = []
                         for curr, prev in zip(current_center_pts, prev_center_pts):
-                            # %70 eski konum, %30 yeni konum (Titreşimi öldürür)
+                            # %70 eski konum, %30 yeni konum 
                             new_x = int(prev[0] * 0.7 + curr[0] * 0.3)
                             new_y = curr[1] # Y ekseni genelde sabit adım olduğu için değişmez
                             smoothed_pts.append((new_x, new_y))
@@ -125,7 +128,7 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
                     # 3. Bir sonraki kare için sakla
                     prev_center_pts = current_center_pts
 
-                    # Çizim (Artık yumuşatılmış noktaları çiziyoruz)
+                    # Çizim 
                     if len(current_center_pts) > 1:
                         for j in range(len(current_center_pts) - 1):
                             cv2.line(annotated_frame, current_center_pts[j], current_center_pts[j+1], (0, 255, 255), 2)
