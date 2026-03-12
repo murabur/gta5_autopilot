@@ -1,7 +1,7 @@
 # GTA V Otopilot
 
 
-GTA V içerisinde görüntü işleme ve yapay zeka teknikleri kullanarak otomatik sürüş sistemi geliştirme projesi.
+GTA V içerisinde görüntü işleme ve yapay zeka teknikleri kullanarak otonom sürüş sistemi geliştirme projesi.
 
 Bu repo aynı zamanda Computer Vision, NumPy ve OpenCV öğrenme sürecinin teknik notlarını ve deneylerini içermektedir.
 Önemli not: Ciddi bir iddiam bulunmamaktadır. Bu proje hobi projesi seviyesindedir ve öğrenme odaklıdır.
