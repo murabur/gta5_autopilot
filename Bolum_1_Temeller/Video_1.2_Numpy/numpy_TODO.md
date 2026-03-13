@@ -7,14 +7,14 @@ Bu liste görüntü işleme için gerekli konuları kapsamaktadır. Numpy kütü
 - shape, ndim, size [Numpy ndarray](1_numpy_ndarray.ipynb)
 - Array oluşturma (array, zeros, ones, full) [Numpy array oluşturma](2_numpy_array_olusturma.ipynb)
 - arange ve linspace [Numpy array oluşturma](2_numpy_array_olusturma.ipynb)
-- Random array oluşturma
-- Array boyutlarını anlama
+- Random array oluşturma [Numpy array oluşturma](2_numpy_array_olusturma.ipynb)
+- Array boyutlarını anlama [Numpy ndarray](1_numpy_ndarray.ipynb)
 - reshape
 - flatten ve ravel
 - transpose
-- Temel indexing
-- Çok boyutlu indexing
-- Slicing
+- Temel indexing [Numpy Indexing/Slicing ](3_1_numpy_indexing_slicing.ipynb) - [Numpy Indexing/Slicing ](3_2_numpy_slicing_cv.ipynb) 
+- Çok boyutlu indexing [Numpy Indexing/Slicing ](3_1_numpy_indexing_slicing.ipynb) - [Numpy Indexing/Slicing ](3_2_numpy_slicing_cv.ipynb) 
+- Slicing [Numpy Indexing/Slicing ](3_1_numpy_indexing_slicing.ipynb) - [Numpy Indexing/Slicing ](3_2_numpy_slicing_cv.ipynb) 
 - Fancy indexing
 - Boolean indexing
 - Array matematiği (element-wise işlemler)
