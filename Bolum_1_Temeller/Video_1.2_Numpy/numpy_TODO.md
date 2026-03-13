@@ -15,7 +15,7 @@ Bu liste görüntü işleme için gerekli konuları kapsamaktadır. Numpy kütü
 - Temel indexing [Numpy Indexing/Slicing ](3_1_numpy_indexing_slicing.ipynb) - [Numpy Indexing/Slicing ](3_2_numpy_slicing_cv.ipynb) 
 - Çok boyutlu indexing [Numpy Indexing/Slicing ](3_1_numpy_indexing_slicing.ipynb) - [Numpy Indexing/Slicing ](3_2_numpy_slicing_cv.ipynb) 
 - Slicing [Numpy Indexing/Slicing ](3_1_numpy_indexing_slicing.ipynb) - [Numpy Indexing/Slicing ](3_2_numpy_slicing_cv.ipynb) 
-- Fancy indexing
+- Fancy indexing [Numpy Fancy Indexing ](6_numpy_fancy_indexing.ipynb)
 - Boolean indexing
 - Array matematiği (element-wise işlemler)
 - Scalar işlemleri
