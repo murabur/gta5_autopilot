@@ -38,15 +38,15 @@ Bu liste NumPy kullanımının yaklaşık %80–90'ını kapsar.
 
 # 3. Indexing ve Slicing
 
-| Kavram | Açıklama |
-|------|------|
-| `array[i]` | Tek eleman |
-| `array[i,j]` | 2D eleman erişimi |
-| `array[:, :]` | Tüm satır ve sütun |
-| `array[:, 0]` | Sütun seçme |
-| `array[0, :]` | Satır seçme |
-| negative indexing | sondan erişim |
-| slicing | belirli aralık seçme |
+| Kavram | Açıklama |Dosya
+|------|------|------|
+| `array[i]` | Tek eleman |[Numpy Indexing - Slicing](./3_1_numpy_indexing_slicing.ipynb)  - [Numpy Slicing Computer Vision](./3_2_numpy_slicing_cv.ipynb)
+| `array[i,j]` | 2D eleman erişimi |[Numpy Indexing - Slicing](./3_1_numpy_indexing_slicing.ipynb)  - [Numpy Slicing Computer Vision](./3_2_numpy_slicing_cv.ipynb)
+| `array[:, :]` | Tüm satır ve sütun |[Numpy Indexing - Slicing](./3_1_numpy_indexing_slicing.ipynb)  - [Numpy Slicing Computer Vision](./3_2_numpy_slicing_cv.ipynb)
+| `array[:, 0]` | Sütun seçme |[Numpy Indexing - Slicing](./3_1_numpy_indexing_slicing.ipynb)  - [Numpy Slicing Computer Vision](./3_2_numpy_slicing_cv.ipynb)
+| `array[0, :]` | Satır seçme |[Numpy Indexing - Slicing](./3_1_numpy_indexing_slicing.ipynb)  - [Numpy Slicing Computer Vision](./3_2_numpy_slicing_cv.ipynb)
+| negative indexing | sondan erişim |[Numpy Indexing - Slicing](./3_1_numpy_indexing_slicing.ipynb)  - [Numpy Slicing Computer Vision](./3_2_numpy_slicing_cv.ipynb)
+| slicing | belirli aralık seçme |[Numpy Indexing - Slicing](./3_1_numpy_indexing_slicing.ipynb)  - [Numpy Slicing Computer Vision](./3_2_numpy_slicing_cv.ipynb)
 
 ---
 
