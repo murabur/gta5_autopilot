@@ -3,10 +3,10 @@ Bu liste görüntü işleme için gerekli konuları kapsamaktadır. Numpy kütü
 - NumPy nedir
 - Python list vs NumPy array
 - ndarray veri yapısı [Numpy ndarray](1_numpy_ndarray.ipynb)
-- dtype kavramı 
+- dtype kavramı [Numpy dtype](numpy_dtype_kavrami.ipynb)
 - shape, ndim, size [Numpy ndarray](1_numpy_ndarray.ipynb)
-- Array oluşturma (array, zeros, ones, full)
-- arange ve linspace
+- Array oluşturma (array, zeros, ones, full) [Numpy array oluşturma](2_numpy_array_olusturma.ipynb)
+- arange ve linspace [Numpy array oluşturma](2_numpy_array_olusturma.ipynb)
 - Random array oluşturma
 - Array boyutlarını anlama
 - reshape
