@@ -9,9 +9,9 @@ Bu liste görüntü işleme için gerekli konuları kapsamaktadır. Numpy kütü
 - arange ve linspace [Numpy array oluşturma](2_numpy_array_olusturma.ipynb)
 - Random array oluşturma [Numpy array oluşturma](2_numpy_array_olusturma.ipynb)
 - Array boyutlarını anlama [Numpy ndarray](1_numpy_ndarray.ipynb)
-- reshape
-- flatten ve ravel
-- transpose
+- reshape [Shape Operations](5_numpy_array_shape_operations.ipynb)
+- flatten ve ravel [Shape Operations](5_numpy_array_shape_operations.ipynb)
+- transpose [Shape Operations](5_numpy_array_shape_operations.ipynb)
 - Temel indexing [Numpy Indexing/Slicing ](3_1_numpy_indexing_slicing.ipynb) - [Numpy Indexing/Slicing ](3_2_numpy_slicing_cv.ipynb) 
 - Çok boyutlu indexing [Numpy Indexing/Slicing ](3_1_numpy_indexing_slicing.ipynb) - [Numpy Indexing/Slicing ](3_2_numpy_slicing_cv.ipynb) 
 - Slicing [Numpy Indexing/Slicing ](3_1_numpy_indexing_slicing.ipynb) - [Numpy Indexing/Slicing ](3_2_numpy_slicing_cv.ipynb) 
