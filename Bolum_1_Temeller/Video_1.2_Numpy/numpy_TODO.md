@@ -19,7 +19,7 @@ Bu liste görüntü işleme için gerekli konuları kapsamaktadır. Numpy kütü
 - Boolean indexing [Numpy Boolean Indexing ](7_numpy_boolean_indexing.ipynb)
 - Array matematiği (element-wise işlemler) [Numpy array matematiği](8_array_math.ipynb)
 - Skaler işlemler  [Numpy skaler işlemler](9_numpy_skaler.ipynb)
-- Vectorized işlemler
+- Vectorized işlemler - Ne olduğuna değinilecek.
 - Broadcasting nedir
 - Broadcasting kuralları
 - Broadcasting örnekleri
