@@ -20,9 +20,9 @@ Bu liste görüntü işleme için gerekli konuları kapsamaktadır. Numpy kütü
 - Array matematiği (element-wise işlemler) [Numpy array matematiği](8_array_math.ipynb)
 - Skaler işlemler  [Numpy skaler işlemler](9_numpy_skaler.ipynb)
 - Vectorized işlemler - Ne olduğuna değinilecek.
-- Broadcasting nedir
-- Broadcasting kuralları
-- Broadcasting örnekleri
+- Broadcasting nedir [Numpy Broadcasting](10_numpy_broadcasting.ipynb)
+- Broadcasting kuralları [Numpy Broadcasting](10_numpy_broadcasting.ipynb)
+- Broadcasting örnekleri [Numpy Broadcasting](10_numpy_broadcasting.ipynb)
 - Axis kavramı
 - Axis ile işlemler (sum, mean vb.)
 - İstatistik fonksiyonları (mean, std, var, min, max)
