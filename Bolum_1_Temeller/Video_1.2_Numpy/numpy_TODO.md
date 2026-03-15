@@ -32,9 +32,10 @@ Bu liste görüntü işleme için gerekli konuları kapsamaktadır. Numpy kütü
 - Matrix multiplication [Lineer cebir işlemleri](14_numpy_linear_algebra.ipynb)
 - Transpose [Shape Operations](5_numpy_array_shape_operations.ipynb)
 - Inverse ve determinant [Lineer cebir işlemleri](14_numpy_linear_algebra.ipynb)
-- Random modülü
-- Uniform dağılım
-- Normal dağılım
+- Random modülü [Random modülü](15_numpy_random.ipynb)
+- Uniform dağılım [Random modülü](15_numpy_random.ipynb)
+- Normal dağılım [Random modülü](15_numpy_random.ipynb)
+# - **Daha sonra yapılacaklar/Sitede yer verilecekler**
 - NumPy performansı ve vectorization
 - Memory modeli
 - Views vs copies
