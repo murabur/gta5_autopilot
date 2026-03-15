@@ -23,10 +23,10 @@ Bu liste görüntü işleme için gerekli konuları kapsamaktadır. Numpy kütü
 - Broadcasting nedir [Numpy Broadcasting](10_numpy_broadcasting.ipynb)
 - Broadcasting kuralları [Numpy Broadcasting](10_numpy_broadcasting.ipynb)
 - Broadcasting örnekleri [Numpy Broadcasting](10_numpy_broadcasting.ipynb)
-- Axis kavramı
-- Axis ile işlemler (sum, mean vb.)
-- İstatistik fonksiyonları (mean, std, var, min, max)
-- Array manipülasyonu (concatenate, stack, split)
+- Axis kavramı [Axis ](11_numpy_axis.ipynb)
+- Axis ile işlemler - (sum, mean vb.) [İstatistik fonksiyonları](12_istatistik_fonksiyonlari.ipynb)
+- İstatistik fonksiyonları (mean, std, var, min, max) [İstatistik fonksiyonları](12_istatistik_fonksiyonlari.ipynb)
+- Array manipülasyonu (concatenate, stack, split) 
 - Linear algebra
 - Dot product
 - Matrix multiplication
