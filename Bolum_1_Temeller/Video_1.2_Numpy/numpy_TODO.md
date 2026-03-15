@@ -51,6 +51,3 @@ Bu liste görüntü işleme için gerekli konuları kapsamaktadır. Numpy kütü
 - Histogram hesaplama
 - Basit görüntü filtreleri
 - Mask işlemleri
-- Boolean masks
-- Axis mantığı 
-- Views vs copies
