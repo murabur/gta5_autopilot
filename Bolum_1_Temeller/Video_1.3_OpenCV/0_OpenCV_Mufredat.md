@@ -97,7 +97,7 @@ Takip edilmesi planlanan müfredat budur. Size bunun hepsini yapacağımın gara
 | `cv2.subtract(img1, img2)` | Piksel bazlı çıkarma |
 | `cv2.multiply(img1, img2)` | Piksel bazlı çarpma |
 | `cv2.divide(img1, img2)` | Piksel bazlı bölme |
-| `cv2.addWeighted(img1, alpha, img2, beta, gamma)` | Alpha blending: img1*alpha + img2*beta + gamma |
+| `cv2.addWeighted(img1, alpha, img2, beta, gamma)` | Alpha blending: img1 * alpha + img2 * beta + gamma |
 | `cv2.bitwise_and(img1, img2, mask)` | Piksel bazlı AND — maske uygulama |
 | `cv2.bitwise_or(img1, img2, mask)` | Piksel bazlı OR |
 | `cv2.bitwise_not(img)` | Piksel bazlı NOT — renk tersine çevirme |
