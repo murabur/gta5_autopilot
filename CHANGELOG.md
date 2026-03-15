@@ -2,6 +2,10 @@
 
 Bu dosya projenin geliştirme sürecindeki teknik ilerlemeleri ve yapılan deneyleri kaydetmek amacıyla tutulmaktadır.
 
+## 2026-03-15
+- Numpy'ın Computer Vision için gereken önemli bir bölümü bitirildi.
+
+
 ## 2026-03-10
 - [NumPy indexing ve slicing ](./Bolum_1_Temeller/Video_1.2_Numpy/3_1_numpy_indexing_slicing.ipynb) konusuna eklemeler yapıldı.
 - [NumPy indexing ve slicing Computer Vision ](./Bolum_1_Temeller/Video_1.2_Numpy/3_2_numpy_slicing_cv.ipynb) konusunda çalışma yapıldı
