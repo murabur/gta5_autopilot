@@ -26,7 +26,7 @@ Bu liste görüntü işleme için gerekli konuları kapsamaktadır. Numpy kütü
 - Axis kavramı [Axis ](11_numpy_axis.ipynb)
 - Axis ile işlemler - (sum, mean vb.) [İstatistik fonksiyonları](12_istatistik_fonksiyonlari.ipynb)
 - İstatistik fonksiyonları (mean, std, var, min, max) [İstatistik fonksiyonları](12_istatistik_fonksiyonlari.ipynb)
-- Array manipülasyonu (concatenate, stack, split) 
+- Array manipülasyonu (concatenate, stack, split) [Array manüpilasyonu](13_numpy_array_manupilasyonu.ipynb)
 - Linear algebra
 - Dot product
 - Matrix multiplication
