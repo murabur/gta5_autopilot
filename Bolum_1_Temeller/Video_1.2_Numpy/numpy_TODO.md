@@ -27,11 +27,11 @@ Bu liste görüntü işleme için gerekli konuları kapsamaktadır. Numpy kütü
 - Axis ile işlemler - (sum, mean vb.) [İstatistik fonksiyonları](12_istatistik_fonksiyonlari.ipynb)
 - İstatistik fonksiyonları (mean, std, var, min, max) [İstatistik fonksiyonları](12_istatistik_fonksiyonlari.ipynb)
 - Array manipülasyonu (concatenate, stack, split) [Array manüpilasyonu](13_numpy_array_manupilasyonu.ipynb)
-- Linear algebra
-- Dot product
-- Matrix multiplication
-- Transpose
-- Inverse ve determinant
+- Linear algebra [Lineer cebir işlemleri](14_numpy_linear_algebra.ipynb)
+- Dot product [Lineer cebir işlemleri](14_numpy_linear_algebra.ipynb)
+- Matrix multiplication [Lineer cebir işlemleri](14_numpy_linear_algebra.ipynb)
+- Transpose [Shape Operations](5_numpy_array_shape_operations.ipynb)
+- Inverse ve determinant [Lineer cebir işlemleri](14_numpy_linear_algebra.ipynb)
 - Random modülü
 - Uniform dağılım
 - Normal dağılım
