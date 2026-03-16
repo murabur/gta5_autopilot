@@ -157,8 +157,8 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
     return annotated_frame
 
 
-def draw_detections(results, current_frame):
-    best_light_roi = None 
+def draw_detections(results, current_frame, original_frame):
+    best_light_roi = None
     if results.boxes is not None:
         boxes = results.boxes.xyxy.cpu().numpy().astype(int)
         classes = results.boxes.cls.cpu().numpy().astype(int)
@@ -171,12 +171,12 @@ def draw_detections(results, current_frame):
             class_id = classes[i]
             conf = confidences[i]
             name = CLASS_NAMES.get(class_id, "Bilinmeyen")
-            
+
             if name == "traffic_light":
                 current_area = (x2 - x1) * (y2 - y1)
                 if current_area > max_area:
                     max_area = current_area
-                    best_light_roi = current_frame[y1:y2, x1:x2].copy()
+                    best_light_roi = original_frame[y1:y2, x1:x2].copy()  # original_frame'den kırp
 
             color = CLASS_COLORS.get(class_id, (0, 255, 0))
             if name not in ["road", "sidewalk"]:
@@ -211,7 +211,7 @@ while True:
 
     # Kutu Çizimi
     box_time_0 = time.perf_counter()
-    final_display, best_light_roi = draw_detections(results, annotated_frame)
+    final_display, best_light_roi = draw_detections(results, annotated_frame, frame)
     box_time_1 = time.perf_counter()
 
     # Metrikler
