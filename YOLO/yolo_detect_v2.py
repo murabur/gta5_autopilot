@@ -38,7 +38,7 @@ def get_road_centerline(road_mask):
 
     heigth, width = road_mask.shape     #yükseklik, genişlik bilgisini yol maskesinden alır.
     center_points = []                  #merkez noktaları için boş liste
-
+    prev_center_x = target_w //2
     for y in range(int(heigth*0.3), heigth, 10):    #yüksekliğin 0.3'ünden itibaren sonuna kadar her 10 adımda bir
         row = road_mask[y,:] #y = height , bütün x satırını = width al
 
@@ -46,11 +46,16 @@ def get_road_centerline(road_mask):
         #np.where(row > 0.5) bu ihtimale sahip piksellerin koordinatlarını döndür
         #[0] np.where tuple döndürür. tuple'ın ilk elemanını almalıyız.
         white_pixels = np.where(row>0.5)[0] 
-
+        
         #eğer white_pixels değeri 0'dan büyükse 
         if len(white_pixels) > 0:
             center_x = int(np.mean(white_pixels))   #noktaların ortalamasını al
+            prev_center_x = center_x
             center_points.append((center_x, y))     #merkez noktasını listeye ekle
+
+        elif len(white_pixels) == 0:
+            center_x = prev_center_x
+            center_points.append((center_x, y)) 
 
     return center_points
 
@@ -76,7 +81,11 @@ CLASS_COLORS = {
 
 target_h = 720
 target_w = 1280
-global_overlay = np.zeros((target_h, target_w, 3), dtype=np.uint8)
+small_h = 180
+small_w = 320
+scale_y = small_h / target_h
+scale_x = small_w / target_w
+global_overlay = np.zeros((small_h, small_w, 3), dtype=np.uint8)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # 3. İŞLEM FONKSİYONLARI
@@ -115,15 +124,19 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
                 color = CLASS_COLORS.get(class_id, (255, 255, 255))         #class_id'ye göre renk atanıyor, yoksa beyaz.
 
                 # Sadece numpy array'e ve int32'ye çevirme işlemi yeterlidir
-                pts = np.array(mask_pts, np.int32).reshape((-1, 1, 2))      # Ham veri sekli: (78, 2) Reshape sonrasi seki: (78, 1, 2)
+                pts = np.array(mask_pts, np.float32)     # Ham veri sekli: (78, 2) Reshape sonrasi seki: (78, 1, 2)
+                pts[:, 0] *= scale_x
+                pts[:, 1] *= scale_y
+                pts = pts.astype(np.int32).reshape((-1, 1, 2))
 
                 cv2.fillPoly(overlay, [pts], color)                         #overlay nesnesine [pts] koordinatlarında color rengini doldur.
                 
                 if class_id == 0:                                           #0 = road maskesi 
-                    temp_road_mask = np.zeros((target_h, target_w), dtype=np.uint8) #
+                    temp_road_mask = np.zeros((small_h, small_w), dtype=np.uint8) #
                     cv2.fillPoly(temp_road_mask, [pts], 255)
 
                     current_center_pts = get_road_centerline(temp_road_mask)
+                    current_center_pts = [(int(x / scale_x), int(y / scale_y)) for x, y in current_center_pts]
 
                     #temporal smoothing
                     if prev_center_pts is not None and len(current_center_pts) == len(prev_center_pts):
@@ -143,7 +156,8 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
                         for j in range(len(current_center_pts) - 1):
                             cv2.line(annotated_frame, current_center_pts[j], current_center_pts[j+1], (0, 255, 255), 2)
 
-        cv2.addWeighted(src1=overlay, alpha=0.4, src2=annotated_frame, beta=0.6, gamma=0, dst=annotated_frame)
+        overlay_resized = cv2.resize(overlay, (target_w, target_h))
+        cv2.addWeighted(src1=overlay_resized, alpha=0.4, src2=annotated_frame, beta=0.6, gamma=0, dst=annotated_frame)
 
 
     return annotated_frame
