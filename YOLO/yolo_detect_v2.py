@@ -35,27 +35,21 @@ def correct_polygon_padding(masks_xy, target_h, target_w, model_img_size=640):
 
 #yolun orta noktasını alır, bir listeye ekler ve listeyi döndürür.
 def get_road_centerline(road_mask):
+    heigth, width = road_mask.shape
+    center_points = []
+    prev_center_x = width // 2  # target_w yerine maskenin kendi genişliği
 
-    heigth, width = road_mask.shape     #yükseklik, genişlik bilgisini yol maskesinden alır.
-    center_points = []                  #merkez noktaları için boş liste
-    prev_center_x = target_w //2
-    for y in range(int(heigth*0.3), heigth, 10):    #yüksekliğin 0.3'ünden itibaren sonuna kadar her 10 adımda bir
-        row = road_mask[y,:] #y = height , bütün x satırını = width al
+    for y in range(int(heigth * 0.3), heigth, 10):
+        row = road_mask[y, :]
+        white_pixels = np.where(row > 0.5)[0]
 
-        #row > 0.5 yol maskesinin ihtimal değeri(confidence değil) 0.5ten büyük olanları al.
-        #np.where(row > 0.5) bu ihtimale sahip piksellerin koordinatlarını döndür
-        #[0] np.where tuple döndürür. tuple'ın ilk elemanını almalıyız.
-        white_pixels = np.where(row>0.5)[0] 
-        
-        #eğer white_pixels değeri 0'dan büyükse 
         if len(white_pixels) > 0:
-            center_x = int(np.mean(white_pixels))   #noktaların ortalamasını al
+            center_x = int(np.mean(white_pixels))
             prev_center_x = center_x
-            center_points.append((center_x, y))     #merkez noktasını listeye ekle
-
-        elif len(white_pixels) == 0:
+        else:
             center_x = prev_center_x
-            center_points.append((center_x, y)) 
+
+        center_points.append((center_x, y))
 
     return center_points
 
