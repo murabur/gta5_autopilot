@@ -104,55 +104,58 @@ def get_predictions(source):
 def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
     global prev_center_pts
 
-
-    if results.masks is not None:                                           #eğer maskeler None dönmediyse
-        raw_masks_xy = results.masks.xy                                     #ultralytics kütüphanesinden dönen poligon koordinatlarını raw_masks_xy'e ata
-        classes_for_masks = results.boxes.cls.cpu().numpy().astype(int)     #sınıf idlerini int şeklinde classes_for_masks'a ata
+    if results.masks is not None:
+        raw_masks_xy = results.masks.xy
+        classes_for_masks = results.boxes.cls.cpu().numpy().astype(int)
         
-        # correct_polygon_padding ÇIKARILDI. Doğrudan raw_masks_xy kullanılıyor.
-        for i, mask_pts in enumerate(raw_masks_xy):
-            if len(mask_pts) == 0: continue                                 #eğer maske uzunluğu sıfır ise işlem yapmadan devam et.
-            class_id = classes_for_masks[i]                                 #sınıf idleri class_id değişkenine atanıyor.
-            
-            if class_id in [0, 1, 2,5]:                                     #road, sidewalk, car, traffic_light
-                color = CLASS_COLORS.get(class_id, (255, 255, 255))         #class_id'ye göre renk atanıyor, yoksa beyaz.
+        best_road_mask = None
+        best_road_area = 0
 
-                # Sadece numpy array'e ve int32'ye çevirme işlemi yeterlidir
-                pts = np.array(mask_pts, np.float32)     # Ham veri sekli: (78, 2) Reshape sonrasi seki: (78, 1, 2)
+        for i, mask_pts in enumerate(raw_masks_xy):
+            if len(mask_pts) == 0: continue
+            class_id = classes_for_masks[i]
+            
+            if class_id in [0, 1, 2, 5]:
+                color = CLASS_COLORS.get(class_id, (255, 255, 255))
+                pts = np.array(mask_pts, np.float32)
                 pts[:, 0] *= scale_x
                 pts[:, 1] *= scale_y
                 pts = pts.astype(np.int32).reshape((-1, 1, 2))
-
-                cv2.fillPoly(overlay, [pts], color)                         #overlay nesnesine [pts] koordinatlarında color rengini doldur.
+                cv2.fillPoly(overlay, [pts], color)
                 
-                if class_id == 0:                                           #0 = road maskesi 
-                    temp_road_mask = np.zeros((small_h, small_w), dtype=np.uint8) #
-                    cv2.fillPoly(temp_road_mask, [pts], 255)
+                if class_id == 0:
+                    area = cv2.contourArea(pts)
+                    if area > best_road_area:
+                        best_road_area = area
+                        best_road_mask = pts
 
-                    current_center_pts = get_road_centerline(temp_road_mask)
-                    current_center_pts = [(int(x / scale_x), int(y / scale_y)) for x, y in current_center_pts]
+        # Sadece en büyük road maskesinden centerline
+        if best_road_mask is not None:
+            temp_road = np.zeros((small_h, small_w), dtype=np.uint8)
+            cv2.fillPoly(temp_road, [best_road_mask], 255)
+            
+            current_center_pts = get_road_centerline(temp_road)
+            current_center_pts = [(int(x / scale_x), int(y / scale_y)) for x, y in current_center_pts]
 
-                    #temporal smoothing
-                    if prev_center_pts is not None and len(current_center_pts) == len(prev_center_pts):
-                        smoothed_pts = []
-                        for curr, prev in zip(current_center_pts, prev_center_pts):
-                            # %70 eski konum, %30 yeni konum 
-                            new_x = int(prev[0] * 0.7 + curr[0] * 0.3)
-                            new_y = curr[1] # Y ekseni genelde sabit adım olduğu için değişmez
-                            smoothed_pts.append((new_x, new_y))
-                        current_center_pts = smoothed_pts
-                    
-                    # 3. Bir sonraki kare için sakla
-                    prev_center_pts = current_center_pts
+            if prev_center_pts is not None and len(current_center_pts) > 1:
+                min_len = min(len(current_center_pts), len(prev_center_pts))
+                smoothed_pts = []
+                for k in range(min_len):
+                    new_x = int(prev_center_pts[k][0] * 0.7 + current_center_pts[k][0] * 0.3)
+                    new_y = current_center_pts[k][1]
+                    smoothed_pts.append((new_x, new_y))
+                if len(current_center_pts) > min_len:
+                    smoothed_pts.extend(current_center_pts[min_len:])
+                current_center_pts = smoothed_pts
 
-                    # Çizim 
-                    if len(current_center_pts) > 1:
-                        for j in range(len(current_center_pts) - 1):
-                            cv2.line(annotated_frame, current_center_pts[j], current_center_pts[j+1], (0, 255, 255), 2)
+            prev_center_pts = current_center_pts
+
+            if len(current_center_pts) > 1:
+                for j in range(len(current_center_pts) - 1):
+                    cv2.line(annotated_frame, current_center_pts[j], current_center_pts[j+1], (0, 255, 255), 2)
 
         overlay_resized = cv2.resize(overlay, (target_w, target_h))
         cv2.addWeighted(src1=overlay_resized, alpha=0.4, src2=annotated_frame, beta=0.6, gamma=0, dst=annotated_frame)
-
 
     return annotated_frame
 
@@ -202,6 +205,7 @@ while True:
     time_predict_1 = time.perf_counter()
 
     annotated_frame = frame
+    original_frame = frame.copy()
     global_overlay.fill(0)
 
     # Maskeleme
@@ -211,7 +215,7 @@ while True:
 
     # Kutu Çizimi
     box_time_0 = time.perf_counter()
-    final_display, best_light_roi = draw_detections(results, annotated_frame, frame)
+    final_display, best_light_roi = draw_detections(results, annotated_frame, original_frame)
     box_time_1 = time.perf_counter()
 
     # Metrikler
