@@ -64,7 +64,7 @@ CLASS_NAMES = {0: 'road', 1: 'sidewalk', 2: 'car', 3: 'motorcycle', 4: 'person',
 NUM_CLASSES = len(CLASS_NAMES)
 
 # Çıktı dizini
-OUTPUT_DIR = "dataset"
+OUTPUT_DIR = r"C:\Users\muratburc\Desktop\gta5_projesi\veri_seti\dataset_3_sahıs"
 IMG_W = 1280                               # Yakalanan görüntü genişliği
 IMG_H = 720                                # Yakalanan görüntü yüksekliği
 
