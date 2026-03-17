@@ -6,6 +6,11 @@ from ultralytics import YOLO
 
 prev_center_pts = None
 
+# Mesafe ve durum takibi için global sözlükler
+vehicle_distances = {}
+vehicle_states = {}
+vehicle_areas = {}
+
 # ══════════════════════════════════════════════════════════════════════════════
 # 1. YARDIMCI FONKSİYONLAR
 # ══════════════════════════════════════════════════════════════════════════════
@@ -13,11 +18,9 @@ def correct_polygon_padding(masks_xy, target_h, target_w, model_img_size=640):
     """
     Poligon (XY) koordinatlarındaki letterbox padding kaymasını vektörel olarak düzeltir.
     """
-    #target_h = 720 - target_w = 1280
-    #640/720 - 640/1280 = 
-    scale = min(model_img_size / target_h, model_img_size / target_w) #scale = 640/1280=  0,5
-    pad_y = (model_img_size - target_h * scale) / 2 #640 - 720*0.5 = 280 -> 280/2 = 140. Alttan üstten 140 pixel paddind
-    pad_x = (model_img_size - target_w * scale) / 2 #640 - 1280*0.5 = 0
+    scale = min(model_img_size / target_h, model_img_size / target_w)
+    pad_y = (model_img_size - target_h * scale) / 2
+    pad_x = (model_img_size - target_w * scale) / 2
 
     corrected_masks = []
     for pts in masks_xy:
@@ -33,7 +36,6 @@ def correct_polygon_padding(masks_xy, target_h, target_w, model_img_size=640):
         
     return corrected_masks
 
-#yolun orta noktasını alır, bir listeye ekler ve listeyi döndürür.
 def get_road_centerline(road_mask):
     height, width = road_mask.shape
     center_points = []
@@ -85,10 +87,6 @@ global_overlay = np.zeros((small_h, small_w, 3), dtype=np.uint8)
 # 3. İŞLEM FONKSİYONLARI
 # ══════════════════════════════════════════════════════════════════════════════
 
-
-
-
-#ekran yakalama fonksiyonu
 def screen_capture(cam_obj, area):
     frame = cam_obj.grab(region=area)
     if frame is None:
@@ -109,12 +107,10 @@ def find_ego_car(boxes, classes, track_ids):
     if track_ids is None:
         return None
     
-    # Mevcut ego hâlâ sahnede mi?
     if ego_track_id is not None:
         if ego_track_id in track_ids:
             return ego_track_id
     
-    # Ego kayboldu veya henüz atanmadı — yeniden bul
     best_score = 0
     best_id = None
     
@@ -125,17 +121,14 @@ def find_ego_car(boxes, classes, track_ids):
         x1, y1, x2, y2 = box
         if classes[i] != 2:
             continue
-
   
         cx = (x1 + x2) / 2
         cy = (y1 + y2) / 2
 
-        #ekranın üst yarısındaysa atla
         if cy < screen_bottom * 0.5:
             continue
         
         area = (x2 - x1) * (y2 - y1)
-
         
         dist_x = abs(cx - screen_center_x)
         dist_y = abs(cy - screen_bottom)
@@ -145,13 +138,10 @@ def find_ego_car(boxes, classes, track_ids):
         if score > best_score:
             best_score = score
             best_id = track_ids[i]
-
-
     
     ego_track_id = best_id
     return ego_track_id
 
-#maske işlemleri
 def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
     global prev_center_pts
     road_mask_full = None
@@ -211,6 +201,7 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
     return annotated_frame, road_mask_full
 
 def draw_detections(results, current_frame, original_frame, road_mask_full):
+    global vehicle_distances, vehicle_states
     best_light_roi = None
     ego_id = None
     
@@ -222,9 +213,26 @@ def draw_detections(results, current_frame, original_frame, road_mask_full):
         track_ids = results.boxes.id
         if track_ids is not None:
             track_ids = track_ids.cpu().numpy().astype(int)
-        
+            
         ego_id = find_ego_car(boxes, classes, track_ids)
-        print(f"ego_id: {ego_id}, track_ids: {track_ids}")
+        
+        # Bellek temizliği (Ekrandan çıkan araçların verilerini siler)
+        current_frame_ids = set(track_ids) if track_ids is not None else set()
+        for k in list(vehicle_distances.keys()):
+            if k not in current_frame_ids:
+                del vehicle_distances[k]
+                if k in vehicle_states:
+                    del vehicle_states[k]
+
+        # Ego aracın merkez koordinatlarını bul
+        ego_cx, ego_cy = None, None
+        if ego_id is not None:
+            for i, tid in enumerate(track_ids):
+                if tid == ego_id:
+                    x1, y1, x2, y2 = boxes[i]
+                    ego_cx = (x1 + x2) / 2
+                    ego_cy = (y1 + y2) / 2
+                    break
 
         max_area = 0
         for i, box in enumerate(boxes):
@@ -234,16 +242,63 @@ def draw_detections(results, current_frame, original_frame, road_mask_full):
             name = CLASS_NAMES.get(class_id, "Bilinmeyen")
             tid = track_ids[i] if track_ids is not None else "?"
 
+            # Trafik ışığı takibi
             if name == "traffic_light":
                 current_area = (x2 - x1) * (y2 - y1)
                 if current_area > max_area:
                     max_area = current_area
                     best_light_roi = original_frame[y1:y2, x1:x2].copy()
 
+            # Mesafe ve durum hesaplama (Sadece diğer araçlar ve motorlar için)
+            relation_text = ""
+            relation_color = (255, 255, 255)
+            # Başlangıçta global olarak tanımlaman gereken yeni sözlük
+            # vehicle_areas = {} 
+
+            if tid != "?" and tid != ego_id and class_id in [2, 3]:
+                # Aracın o anki piksel alanı
+                current_area = (x2 - x1) * (y2 - y1)
+                
+                if tid in vehicle_areas:
+                    # Önceki 5 karenin alan ortalamasını tutan bir liste varsayımıyla (basitleştirilmiş versiyon)
+                    prev_area = vehicle_areas[tid]
+                    
+                    # Alan değişimi (Delta)
+                    area_diff = current_area - prev_area
+                    
+                    # Titremeyi filtrelemek için alanın en az %2'si kadar bir değişim bekliyoruz
+                    threshold = prev_area * 0.02 
+                    
+                    if area_diff > threshold:
+                        vehicle_states[tid] = "Yaklasiyor"
+                        relation_color = (0, 0, 255)
+                    elif area_diff < -threshold:
+                        vehicle_states[tid] = "Uzaklasiyor"
+                        relation_color = (0, 255, 0)
+                    else:
+                        vehicle_states[tid] = "Sabit"
+                        relation_color = (0, 255, 255)
+                        
+                    # Yumuşatılmış güncelleme (Low-pass filter mantığı)
+                    vehicle_areas[tid] = (prev_area * 0.7) + (current_area * 0.3)
+                else:
+                    vehicle_states[tid] = "Takipte"
+                    vehicle_areas[tid] = current_area
+                    
+                relation_text = f"{vehicle_states.get(tid, '')}"
+                
+                # Duruma göre renk belirleme
+                if relation_text == "Yaklasiyor":
+                    relation_color = (0, 0, 255) # Kırmızı
+                elif relation_text == "Uzaklasiyor":
+                    relation_color = (0, 255, 0) # Yeşil
+                else:
+                    relation_color = (0, 255, 255) # Sarı
+
+            # Çizim işlemleri
             color = CLASS_COLORS.get(class_id, (0, 255, 0))
             if name not in ["road", "sidewalk"]:
                 if track_ids is not None and track_ids[i] == ego_id:
-                    # Ego car yolda mı kontrol
                     ego_bottom_x = (x1 + x2) // 2
                     ego_bottom_y = min(y2, target_h - 1)
                     
@@ -260,6 +315,10 @@ def draw_detections(results, current_frame, original_frame, road_mask_full):
                 else:
                     cv2.rectangle(current_frame, (x1, y1), (x2, y2), color, 2)
                     cv2.putText(current_frame, f"#{tid} {name} {conf:.2f}", (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                    
+                    # Yaklaşıyor / Uzaklaşıyor bilgisini ekrana basma
+                    if relation_text:
+                        cv2.putText(current_frame, relation_text, (x1, y1-25), cv2.FONT_HERSHEY_SIMPLEX, 0.5, relation_color, 2)
 
     return current_frame, best_light_roi, ego_id
 
@@ -267,14 +326,12 @@ def draw_detections(results, current_frame, original_frame, road_mask_full):
 # 4. ANA DÖNGÜ
 # ══════════════════════════════════════════════════════════════════════════════
 
-
 while True:
     t0 = time.perf_counter()
     
     frame = screen_capture(camera, capture_area)
     if frame is None: continue
 
-    # Tahmin
     time_predict_0 = time.perf_counter()
     results = get_predictions(frame)
     time_predict_1 = time.perf_counter()
@@ -283,17 +340,14 @@ while True:
     original_frame = frame.copy()
     global_overlay.fill(0)
 
-    # Maskeleme
     mask_time_0 = time.perf_counter()
     annotated_frame, road_mask_full = process_lane_data(results, target_h, target_w, annotated_frame, global_overlay)
     mask_time_1 = time.perf_counter()
 
-    # Kutu Çizimi
     box_time_0 = time.perf_counter()
     final_display, best_light_roi, ego_id = draw_detections(results, annotated_frame, original_frame, road_mask_full)
     box_time_1 = time.perf_counter()
 
-    # Metrikler
     t1 = time.perf_counter()
     fps = 1 / (t1 - t0)
 
