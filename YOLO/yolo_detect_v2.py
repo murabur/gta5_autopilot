@@ -53,12 +53,6 @@ def get_road_centerline(road_mask):
 
     return center_points
 
-
-
-
-
-
-
 # ══════════════════════════════════════════════════════════════════════════════
 # 2. MODEL VE YAPILANDIRMA
 # ══════════════════════════════════════════════════════════════════════════════
@@ -101,7 +95,7 @@ def screen_capture(cam_obj, area):
 
 #tahmin fonksiyonu
 def get_predictions(source):
-    results = model.predict(source=source, conf=0.3, verbose=False, half=True, stream=True)
+    results = model.track(source=source, conf=0.3, verbose=False, half=True, persist=True, stream=True)
     return next(results)
 
 
@@ -171,6 +165,11 @@ def draw_detections(results, current_frame, original_frame):
         boxes = results.boxes.xyxy.cpu().numpy().astype(int)
         classes = results.boxes.cls.cpu().numpy().astype(int)
         confidences = results.boxes.conf.cpu().numpy()
+        
+        # Track ID'leri al (yoksa None)
+        track_ids = results.boxes.id
+        if track_ids is not None:
+            track_ids = track_ids.cpu().numpy().astype(int)
 
         max_area = 0
 
@@ -179,17 +178,20 @@ def draw_detections(results, current_frame, original_frame):
             class_id = classes[i]
             conf = confidences[i]
             name = CLASS_NAMES.get(class_id, "Bilinmeyen")
+            
+            # Track ID varsa al, yoksa "?" yaz
+            tid = track_ids[i] if track_ids is not None else "?"
 
             if name == "traffic_light":
                 current_area = (x2 - x1) * (y2 - y1)
                 if current_area > max_area:
                     max_area = current_area
-                    best_light_roi = original_frame[y1:y2, x1:x2].copy()  # original_frame'den kırp
+                    best_light_roi = original_frame[y1:y2, x1:x2].copy()
 
             color = CLASS_COLORS.get(class_id, (0, 255, 0))
             if name not in ["road", "sidewalk"]:
                 cv2.rectangle(current_frame, (x1, y1), (x2, y2), color, 2)
-                cv2.putText(current_frame, f"ID:{name} {conf:.2f}", (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                cv2.putText(current_frame, f"#{tid} {name} {conf:.2f}", (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
     return current_frame, best_light_roi
 
