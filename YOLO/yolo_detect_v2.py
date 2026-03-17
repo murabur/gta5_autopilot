@@ -86,6 +86,8 @@ global_overlay = np.zeros((small_h, small_w, 3), dtype=np.uint8)
 # ══════════════════════════════════════════════════════════════════════════════
 
 
+
+
 #ekran yakalama fonksiyonu
 def screen_capture(cam_obj, area):
     frame = cam_obj.grab(region=area)
@@ -99,10 +101,60 @@ def get_predictions(source):
     return next(results)
 
 
+ego_track_id = None
+
+def find_ego_car(boxes, classes, track_ids):
+    global ego_track_id
+    
+    if track_ids is None:
+        return None
+    
+    # Mevcut ego hâlâ sahnede mi?
+    if ego_track_id is not None:
+        if ego_track_id in track_ids:
+            return ego_track_id
+    
+    # Ego kayboldu veya henüz atanmadı — yeniden bul
+    best_score = 0
+    best_id = None
+    
+    screen_center_x = 640
+    screen_bottom = 720
+    
+    for i, box in enumerate(boxes):
+        x1, y1, x2, y2 = box
+        if classes[i] != 2:
+            continue
+
+  
+        cx = (x1 + x2) / 2
+        cy = (y1 + y2) / 2
+
+        #ekranın üst yarısındaysa atla
+        if cy < screen_bottom * 0.5:
+            continue
+        
+        area = (x2 - x1) * (y2 - y1)
+
+        
+        dist_x = abs(cx - screen_center_x)
+        dist_y = abs(cy - screen_bottom)
+        closeness = 1 / (dist_x + dist_y + 1)
+        
+        score = closeness * closeness * area
+        if score > best_score:
+            best_score = score
+            best_id = track_ids[i]
+
+
+    
+    ego_track_id = best_id
+    return ego_track_id
 
 #maske işlemleri
 def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
     global prev_center_pts
+    road_mask_full = None
 
     if results.masks is not None:
         raw_masks_xy = results.masks.xy
@@ -132,7 +184,7 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
         if best_road_mask is not None:
             temp_road = np.zeros((small_h, small_w), dtype=np.uint8)
             cv2.fillPoly(temp_road, [best_road_mask], 255)
-
+            road_mask_full = cv2.resize(temp_road, (target_w, target_h), interpolation=cv2.INTER_NEAREST)
             current_center_pts = get_road_centerline(temp_road)
             current_center_pts = [(int(x / scale_x), int(y / scale_y)) for x, y in current_center_pts]
 
@@ -156,30 +208,30 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
         overlay_resized = cv2.resize(overlay, (target_w, target_h))
         cv2.addWeighted(src1=overlay_resized, alpha=0.4, src2=annotated_frame, beta=0.6, gamma=0, dst=annotated_frame)
 
-    return annotated_frame
+    return annotated_frame, road_mask_full
 
-
-def draw_detections(results, current_frame, original_frame):
+def draw_detections(results, current_frame, original_frame, road_mask_full):
     best_light_roi = None
+    ego_id = None
+    
     if results.boxes is not None:
         boxes = results.boxes.xyxy.cpu().numpy().astype(int)
         classes = results.boxes.cls.cpu().numpy().astype(int)
         confidences = results.boxes.conf.cpu().numpy()
         
-        # Track ID'leri al (yoksa None)
         track_ids = results.boxes.id
         if track_ids is not None:
             track_ids = track_ids.cpu().numpy().astype(int)
+        
+        ego_id = find_ego_car(boxes, classes, track_ids)
+        print(f"ego_id: {ego_id}, track_ids: {track_ids}")
 
         max_area = 0
-
         for i, box in enumerate(boxes):
             x1, y1, x2, y2 = box
             class_id = classes[i]
             conf = confidences[i]
             name = CLASS_NAMES.get(class_id, "Bilinmeyen")
-            
-            # Track ID varsa al, yoksa "?" yaz
             tid = track_ids[i] if track_ids is not None else "?"
 
             if name == "traffic_light":
@@ -190,10 +242,26 @@ def draw_detections(results, current_frame, original_frame):
 
             color = CLASS_COLORS.get(class_id, (0, 255, 0))
             if name not in ["road", "sidewalk"]:
-                cv2.rectangle(current_frame, (x1, y1), (x2, y2), color, 2)
-                cv2.putText(current_frame, f"#{tid} {name} {conf:.2f}", (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                if track_ids is not None and track_ids[i] == ego_id:
+                    # Ego car yolda mı kontrol
+                    ego_bottom_x = (x1 + x2) // 2
+                    ego_bottom_y = min(y2, target_h - 1)
+                    
+                    if road_mask_full is not None and road_mask_full[ego_bottom_y, ego_bottom_x] > 0:
+                        ego_status = "YOLDA"
+                        status_color = (0, 255, 0)
+                    else:
+                        ego_status = "YOLDA DEGIL"
+                        status_color = (0, 0, 255)
+                    
+                    cv2.rectangle(current_frame, (x1, y1), (x2, y2), (0, 255, 255), 3)
+                    cv2.putText(current_frame, f"EGO #{tid} {conf:.2f}", (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
+                    cv2.putText(current_frame, ego_status, (x1, y2+20), cv2.FONT_HERSHEY_SIMPLEX, 0.7, status_color, 2)
+                else:
+                    cv2.rectangle(current_frame, (x1, y1), (x2, y2), color, 2)
+                    cv2.putText(current_frame, f"#{tid} {name} {conf:.2f}", (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
-    return current_frame, best_light_roi
+    return current_frame, best_light_roi, ego_id
 
 # ══════════════════════════════════════════════════════════════════════════════
 # 4. ANA DÖNGÜ
@@ -217,12 +285,12 @@ while True:
 
     # Maskeleme
     mask_time_0 = time.perf_counter()
-    annotated_frame = process_lane_data(results, target_h, target_w, annotated_frame, global_overlay)
+    annotated_frame, road_mask_full = process_lane_data(results, target_h, target_w, annotated_frame, global_overlay)
     mask_time_1 = time.perf_counter()
 
     # Kutu Çizimi
     box_time_0 = time.perf_counter()
-    final_display, best_light_roi = draw_detections(results, annotated_frame, original_frame)
+    final_display, best_light_roi, ego_id = draw_detections(results, annotated_frame, original_frame, road_mask_full)
     box_time_1 = time.perf_counter()
 
     # Metrikler
