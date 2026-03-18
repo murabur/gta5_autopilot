@@ -36,6 +36,8 @@ def correct_polygon_padding(masks_xy, target_h, target_w, model_img_size=640):
         
     return corrected_masks
 
+
+#road maskesinin ortasını bulma - sanal şerit
 def get_road_centerline(road_mask):
     height, width = road_mask.shape
     center_points = []
