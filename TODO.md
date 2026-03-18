@@ -39,7 +39,7 @@ Otomatik sürüş
 ## 6. Görüntü Aritmetiği ve Bitwise İşlemler
 
     - cv2.add                       - 10.03.2026 Yapıldı. Numpy ile arasındaki overflow vs saturation farkı gösterildi.
-    - cv2.subtract
+    - cv2.subtract                  - 19.03.2026 Yapıldı. Numpy ile arasındaki fark gösterildi.
     - cv2.multiply
     - cv2.divide
     - cv2.addWeighted
