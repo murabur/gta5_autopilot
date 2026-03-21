@@ -105,6 +105,7 @@ def get_predictions(source):
 
 
 ego_track_id = None
+
 #binilen aracı bulan fonksiyon
 def find_ego_car(boxes, classes, track_ids):
     global ego_track_id
@@ -338,12 +339,15 @@ def draw_detections(results, current_frame, original_frame, road_mask_full):
 while True:
     t0 = time.perf_counter()
     
+    #ekran yakalama ve frame'e aktarma işlemi
     frame = screen_capture(camera, capture_area)
     if frame is None: continue
 
+    #tahmin işlemi
     time_predict_0 = time.perf_counter()
     results = get_predictions(frame)
     time_predict_1 = time.perf_counter()
+
 
     annotated_frame = frame
     original_frame = frame.copy()
