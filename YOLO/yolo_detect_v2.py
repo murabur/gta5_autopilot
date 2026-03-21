@@ -91,20 +91,21 @@ global_overlay = np.zeros((small_h, small_w, 3), dtype=np.uint8)
 # 3. İŞLEM FONKSİYONLARI
 # ══════════════════════════════════════════════════════════════════════════════
 
+#ekran yakalama fonksiyonu
 def screen_capture(cam_obj, area):
     frame = cam_obj.grab(region=area)
     if frame is None:
         return None
     return frame
 
-#tahmin fonksiyonu
+#tahmin yapan fonksiyon
 def get_predictions(source):
     results = model.track(source=source, conf=0.3, verbose=False, half=True, persist=True, stream=True)
     return next(results)
 
 
 ego_track_id = None
-
+#binilen aracı bulan fonksiyon
 def find_ego_car(boxes, classes, track_ids):
     global ego_track_id
     
