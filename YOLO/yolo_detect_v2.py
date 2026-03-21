@@ -14,6 +14,8 @@ vehicle_areas = {}
 # ══════════════════════════════════════════════════════════════════════════════
 # 1. YARDIMCI FONKSİYONLAR
 # ══════════════════════════════════════════════════════════════════════════════
+
+#.engine dosyası kayma yapıyordu, Ultralyticsin kendi yöntemleri ile bu kayma düzeltildi ve bu fonksiyona şimdilik ihtiyaç kalmadı. Kodun hiçbir kısmında çağrılmıyor.
 def correct_polygon_padding(masks_xy, target_h, target_w, model_img_size=640):
     """
     Poligon (XY) koordinatlarındaki letterbox padding kaymasını vektörel olarak düzeltir.
@@ -144,6 +146,7 @@ def find_ego_car(boxes, classes, track_ids):
     ego_track_id = best_id
     return ego_track_id
 
+#maske işlemleri
 def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
     global prev_center_pts
     road_mask_full = None
@@ -202,6 +205,8 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
 
     return annotated_frame, road_mask_full
 
+
+#bounding box işlemleri
 def draw_detections(results, current_frame, original_frame, road_mask_full):
     global vehicle_distances, vehicle_states
     best_light_roi = None
@@ -324,10 +329,11 @@ def draw_detections(results, current_frame, original_frame, road_mask_full):
 
     return current_frame, best_light_roi, ego_id
 
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # 4. ANA DÖNGÜ
 # ══════════════════════════════════════════════════════════════════════════════
-
 while True:
     t0 = time.perf_counter()
     
