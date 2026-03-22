@@ -41,7 +41,7 @@
 - Dosya fonksiyonlara parçalanacak
 - Dosya modüllere ayrılacak
 
-# Arayüz -
+# Arayüz
 - Pyqt/Pyside ile arayüz yazılacak
 
 # C++
