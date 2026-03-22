@@ -12,6 +12,7 @@ Bu repo aynı zamanda Computer Vision, NumPy ve OpenCV öğrenme sürecinin tekn
 [![Website](https://img.shields.io/badge/Web_Sitem-muratburc.com-blue?style=for-the-badge&logo=google-chrome&logoColor=white)](https://muratburc.com/)
 [![YouTube Ana Kanal](https://img.shields.io/badge/YouTube-Murat_Burç-red?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@muratburc)
 [![YouTube Destek](https://img.shields.io/badge/YouTube-Murat_Burç_Tech-red?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/channel/UCcgArUBkEnL3s2F6M7OuWYw)
+[![Website Proje Ana Sayfa](https://img.shields.io/badge/Site-Proje_Ana_Sayfa-blue?style=for-the-badge&logo=google-chrome&logoColor=white)](https://muratburc.com/gta-5-autopilot/)
 
 
 ## Amaç
