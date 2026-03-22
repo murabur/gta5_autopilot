@@ -1,6 +1,6 @@
-YOLO
+YOLO - Model
 - Model yeni veri setiyle eğitilecek ve paylaşılacak
-Kontrol/Algı
+Algılama
 - Ekrandaki en büyük trafik ışığının ayrı bir pencerede gösterilmesi                    - 7.03.2026 Yapıldı.
 - Trafik ışığı kontrolünün belli bir alana(karşı tarafa) sınırlandırılması
 - Opencv HSV ile kırmızı ve yeşil ışık tespiti
