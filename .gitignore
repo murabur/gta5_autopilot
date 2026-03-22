@@ -11,3 +11,7 @@ __pycache__/
 .env
 venv/
 .vscode/
+
+
+# Test dosyası
+Bolum_1_Temeller/Video_1.3_OpenCV/test.py
