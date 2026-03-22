@@ -42,7 +42,7 @@ Otomatik sürüş
     - cv2.subtract                  - 19.03.2026 Yapıldı. Numpy ile arasındaki fark gösterildi.
     - cv2.multiply                  - 22.03.2026 Yapıldı. Numpy ile arasındaki fark gösterildi.
     - cv2.divide                    - 22.03.2026 Yapıldı. Numpy ile arasındaki fark gösterildi.
-    - cv2.addWeighted
+    - cv2.addWeighted               - 22.03.2026 Yapıldı.
     - cv2.bitwise_and
     - cv2.bitwise_or
     - cv2.bitwise_not
