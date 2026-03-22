@@ -34,7 +34,7 @@ Otomatik sürüş
     - cv2.getPerspectiveTransform
     - cv2.remap
 
-# 9.03.2026
+# 22.03.2026
 
 ## 6. Görüntü Aritmetiği ve Bitwise İşlemler
 
@@ -52,7 +52,7 @@ Otomatik sürüş
     - cv2.convertScaleAbs
 
 ---
-# 10.03.2026
+# 24.03.2026
 
 ## 7. Filtreleme ve Bulanıklaştırma
 
@@ -65,7 +65,7 @@ Otomatik sürüş
     - cv2.stackBlur
     - cv2.sepFilter2D
 
-# 11.03.2026
+# 26.03.2026
 
 ## 8. Kenar Tespiti ve Gradyan
 
@@ -74,7 +74,7 @@ Otomatik sürüş
     - cv2.Scharr
     - cv2.Laplacian
 
-# 12.03.2026
+# 28.03.2026
 
 ## 9. Eşikleme (Thresholding)
 
@@ -88,62 +88,62 @@ Otomatik sürüş
     - cv2.morphologyEx
     - cv2.getStructuringElement
 
-# 13.03.2026
+# 30.03.2026
 
     11. Kontur İşlemleri
 
-# 14.03.2026
+# 31.03.2026
     11. Kontur İşlemleri
-# 15.03.2026
+# 1.04.2026
     11. Kontur İşlemleri
 
 ---
-# 16.03.2026
+# 3.04.2026
     12. Histogram İşlemleri
     Proje 1 - Şerit Tespiti
-# 17.03.2026
+# 5.04.2026
     13. Öznitelik Tespiti (Feature Detection)
-# 18.03.2026
+# 7.04.2026
     13. Öznitelik Tespiti (Feature Detection)
-# 19.03.2026
+# 9.04.2026
     14. Nesne Tespiti
-# 20.03.2026
+# 11.04.2026
     14. Nesne Tespiti
-# 21.03.2026
+# 13.04.2026
     15. Optik Akış ve Video Analizi
-# 22.03.2026
+# 15.04.2026
     15. Optik Akış ve Video Analizi
-# 23.03.2026
+# 17.04.2026
     15. Optik Akış ve Video Analizi
 ---
-# 24.03.2026
+# 19.04.2026
     16. Görüntü Dönüşümleri (Transform)
     Proje 2 - Hareketli Nesne takibi
-# 25.03.2026
+# 21.04.2026
     16. Görüntü Dönüşümleri (Transform)
-# 26.03.2026
+# 23.04.2026
     16. Görüntü Dönüşümleri (Transform)
-# 27.03.2026
+# 25.04.2026
     17. Görüntü Segmentasyonu
-# 28.03.2026
+# 27.04.2026
     17. Görüntü Segmentasyonu
-# 29.03.2026
+# 29.04.2026
     19. DNN (Derin Sinir Ağı) Modülü
-# 30.03.2026
+# 1.05.2026
     19. DNN (Derin Sinir Ağı) Modülü
 ---
-# 31.03.2026
+# 3.05.2026
     19. DNN (Derin Sinir Ağı) Modülü
-# 1.04.2026
+# 5.05.2026
     19. DNN (Derin Sinir Ağı) Modülü
-# 2.04.2026
+# 7.05.2026
     19. DNN (Derin Sinir Ağı) Modülü
     Proje 3 - Trafik tabelası tanıma
-# 3.04.2026
+# 9.05.2026
     20. GUI ve Etkileşim
-# 4.04.2026
+# 11.05.2026
     21. Diğer Faydalı Fonksiyonlar
-# 5.04.2026
+# 13.04.2026
     Proje 4 - Opencv dnn modulü ile nesne tespiti ve uzaklık ölçümü
     Numpy'a giriş
 6.04.2026
