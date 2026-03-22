@@ -15,10 +15,10 @@
     - cv2.multiply                  - 22.03.2026 Yapıldı. Numpy ile arasındaki fark gösterildi.
     - cv2.divide                    - 22.03.2026 Yapıldı. Numpy ile arasındaki fark gösterildi.
     - cv2.addWeighted               - 22.03.2026 Yapıldı.
-    - cv2.bitwise_and
-    - cv2.bitwise_or
-    - cv2.bitwise_not
-    - cv2.bitwise_xor
+    - cv2.bitwise_and               - 22.03.2026 Yapıldı
+    - cv2.bitwise_or                - 22.03.2026 Yapıldı
+    - cv2.bitwise_not               - 22.03.2026 Yapıldı
+    - cv2.bitwise_xor               - 22.03.2026 Yapıldı
     - cv2.absdiff
     - cv2.normalize
     - cv2.convertScaleAbs
