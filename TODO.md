@@ -4,11 +4,11 @@ Kontrol/Algı
 - Ekrandaki en büyük trafik ışığının ayrı bir pencerede gösterilmesi                    - 7.03.2026 Yapıldı.
 - Trafik ışığı kontrolünün belli bir alana(karşı tarafa) sınırlandırılması
 - Opencv HSV ile kırmızı ve yeşil ışık tespiti
-- Temporal Smoothing eklenecek
-- Takip algoritması kullanılacak
-- Segmentasyon maskeleri ile arabalara yaklaşılıyor mu tespiti
+- Temporal Smoothing eklenecek                                                          -Yapıldı
+- Takip algoritması kullanılacak                                                        -Yapıldı
+- Segmentasyon maskeleri ile arabalara yaklaşılıyor mu tespiti                          -Yapıldı
 - Segmentasyon maskeleri ile sol şeritte araba var mı tespiti
-- Yol maskesinin ortasına sanal şerit eklenecek  - 8.03.2026 Yapıldı.
+- Yol maskesinin ortasına sanal şerit eklenecek                                         - 8.03.2026 Yapıldı.
 - Sanal şeritin stabil hale getirilmesi gerekiyor.
 - Yol maskesine eklenen sanal şerit ile Opencv'den alınan şeritler birleştirilecek
 - Bu şeritten sapma oranı ekrana yazdırılacak
