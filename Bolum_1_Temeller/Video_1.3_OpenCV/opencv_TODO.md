@@ -19,7 +19,7 @@
     - cv2.bitwise_or                - 22.03.2026 Yapıldı
     - cv2.bitwise_not               - 22.03.2026 Yapıldı
     - cv2.bitwise_xor               - 22.03.2026 Yapıldı
-    - cv2.absdiff
+    - cv2.absdiff                   - 22.03.2026 Yapıldı
     - cv2.normalize
     - cv2.convertScaleAbs
 
