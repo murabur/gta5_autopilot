@@ -28,10 +28,10 @@
 
 ## 7. Filtreleme ve Bulanıklaştırma
 
-    - cv2.blur
-    - cv2.GaussianBlur
-    - cv2.medianBlur
-    - cv2.bilateralFilter
+    - cv2.blur                      - 22.03.2026 Yapıldı
+    - cv2.GaussianBlur              - 22.03.2026 Yapıldı
+    - cv2.medianBlur                - 22.03.2026 Yapıldı
+    - cv2.bilateralFilter           - 22.03.2026 Yapıldı
     - cv2.filter2D
     - cv2.boxFilter
     - cv2.stackBlur
