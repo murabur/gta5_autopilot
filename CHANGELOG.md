@@ -3,6 +3,9 @@
 Bu dosya projenin geliştirme sürecindeki teknik ilerlemeleri ve yapılan deneyleri kaydetmek amacıyla tutulmaktadır.
 
 
+## 2026-03-24
+- Sobel kenar algılama için karşılaştırmalı örnek eklendi.
+
 ## 2026-03-22
 
 - OpenCV multiply, divide, addWeighted eklendi. 
