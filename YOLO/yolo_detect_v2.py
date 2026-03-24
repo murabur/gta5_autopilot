@@ -148,6 +148,32 @@ def find_ego_car(boxes, classes, track_ids):
     ego_track_id = best_id
     return ego_track_id
 
+#trafik ışığı tespiti
+def detect_traffic_light_color(roi):
+    hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+    
+    red1 = cv2.inRange(hsv, (0, 100, 100), (10, 255, 255))
+    red2 = cv2.inRange(hsv, (160, 100, 100), (180, 255, 255))
+    red = cv2.countNonZero(red1 + red2)
+    
+    green = cv2.countNonZero(cv2.inRange(hsv, (40, 100, 100), (80, 255, 255)))
+    
+    yellow = cv2.countNonZero(cv2.inRange(hsv, (15, 100, 100), (35, 255, 255)))
+    
+    counts = {"KIRMIZI": red, "YESIL": green, "SARI": yellow}
+    best = max(counts, key=counts.get)
+    
+    if counts[best] < 10:
+        return "BELIRSIZ", (200, 200, 200)
+    
+    color_map = {
+        "KIRMIZI": (0, 0, 255),
+        "YESIL": (0, 255, 0),
+        "SARI": (0, 255, 255)
+    }
+    return best, color_map[best]
+
+
 #maske işlemleri
 def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
     global prev_center_pts
@@ -252,11 +278,20 @@ def draw_detections(results, current_frame, original_frame, road_mask_full):
             tid = track_ids[i] if track_ids is not None else "?"
 
             # Trafik ışığı takibi
+            # Trafik ışığı takibi ve renk tespiti
             if name == "traffic_light":
                 current_area = (x2 - x1) * (y2 - y1)
                 if current_area > max_area:
                     max_area = current_area
                     best_light_roi = original_frame[y1:y2, x1:x2].copy()
+                
+                # Her trafik ışığının rengini tespit et
+                light_roi = original_frame[y1:y2, x1:x2]
+                if light_roi.size > 0:
+                    light_color_name, light_color_bgr = detect_traffic_light_color(light_roi)
+                    cv2.rectangle(current_frame, (x1, y1), (x2, y2), light_color_bgr, 2)
+                    cv2.putText(current_frame, f"#{tid} {light_color_name}", (x1, y1-10), 
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, light_color_bgr, 2)
 
             # Mesafe ve durum hesaplama (Sadece diğer araçlar ve motorlar için)
             relation_text = ""
@@ -306,7 +341,7 @@ def draw_detections(results, current_frame, original_frame, road_mask_full):
 
             # Çizim işlemleri
             color = CLASS_COLORS.get(class_id, (0, 255, 0))
-            if name not in ["road", "sidewalk"]:
+            if name not in ["road", "sidewalk", "traffic_light"]:
                 if track_ids is not None and track_ids[i] == ego_id:
                     ego_bottom_x = (x1 + x2) // 2
                     ego_bottom_y = min(y2, target_h - 1)
