@@ -337,7 +337,7 @@ def draw_detections(results, current_frame, original_frame, road_mask_full):
 # 4. ANA DÖNGÜ
 # ══════════════════════════════════════════════════════════════════════════════
 while True:
-    t0 = time.perf_counter()
+    t0 = time.perf_counter() #FPS sayaç başlangıç noktası
     
     #ekran yakalama ve frame'e aktarma işlemi
     frame = screen_capture(camera, capture_area)
@@ -361,6 +361,7 @@ while True:
     final_display, best_light_roi, ego_id = draw_detections(results, annotated_frame, original_frame, road_mask_full)
     box_time_1 = time.perf_counter()
 
+    #FPS sayaç bitiş noktası
     t1 = time.perf_counter()
     fps = 1 / (t1 - t0)
 
