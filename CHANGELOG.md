@@ -2,6 +2,9 @@
 
 Bu dosya projenin geliştirme sürecindeki teknik ilerlemeleri ve yapılan deneyleri kaydetmek amacıyla tutulmaktadır.
 
+## 2026-03-26
+- [yolo_detect_v2 ](./YOLO\yolo_detect_v2.py) dosyasında refactor işlemleri yapıldı. draw detections ve process_lane_data çağrıları daha temiz şekilde yazıldı.
+
 ## 2026-03-25
 - Scharr, Canny, Laplacian için karşılaştırmalı örnek eklendi.
 ## 2026-03-24
