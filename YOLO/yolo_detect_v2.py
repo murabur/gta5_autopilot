@@ -375,7 +375,15 @@ while True:
     mask_time_1 = time.perf_counter()
 
     box_time_0 = time.perf_counter()
-    final_display, best_light_roi, ego_id = draw_detections(results, annotated_frame, original_frame, road_mask_full)
+    final_display, best_light_roi, ego_id = draw_detections(results = results,                  #YOLO results nesnesi
+                                                            current_frame = annotated_frame,    #kutuların çizilmesi için annotated_frame current_frame olarak veriliyor
+                                                            original_frame = original_frame,    #işlenmemiş kare fonksiyona veriliyor
+                                                            road_mask_full = road_mask_full     #hesaplama için yol verisi fonksiyona veriliyor.
+                                                              )
+    #draw_detections return current_frame, best_light_roi, ego_id
+    #final_display = kutu ve maskelerin çizildiği final görüntü
+    #best_light_roi = en büyük trafik ışığının ham piksel verisini döndürür
+    #ego_id şuan ölü değişken durumunda. Kullanılmıyor.
     box_time_1 = time.perf_counter()
 
     #FPS sayaç bitiş noktası
