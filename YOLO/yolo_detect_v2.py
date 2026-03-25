@@ -343,7 +343,7 @@ def draw_detections(results, current_frame, original_frame, road_mask_full):
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# 4. ANA DÖNGÜ
+# 3. Ana döngü
 # ══════════════════════════════════════════════════════════════════════════════
 while True:
     t0 = time.perf_counter() #FPS sayaç başlangıç noktası
@@ -374,14 +374,17 @@ while True:
     t1 = time.perf_counter()
     fps = 1 / (t1 - t0)
 
+
+    #FPS ve işlem sürelerini ekrana yazdırma
     cv2.rectangle(final_display, (5, 10), (220, 140), (0, 0, 0), -1)
     cv2.putText(final_display, f"FPS: {fps:.1f}", (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
     cv2.putText(final_display, f"Predict: {(time_predict_1 - time_predict_0)*1000:.1f} ms", (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
     cv2.putText(final_display, f"Mask: {(mask_time_1 - mask_time_0)*1000:.1f} ms", (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
     cv2.putText(final_display, f"Box: {(box_time_1 - box_time_0)*1000:.1f} ms", (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-    
+    #final görüntüyü ekrana basma
     cv2.imshow("final_display", final_display)
 
+    #en büyük kırmızı ışığın ekrana getirilmesi
     if best_light_roi is not None and best_light_roi.size > 0:
         display_roi = cv2.resize(best_light_roi, (200, 400))
         cv2.imshow("En Yakin Isik", display_roi)
