@@ -2,7 +2,8 @@
 
 Bu dosya projenin geliştirme sürecindeki teknik ilerlemeleri ve yapılan deneyleri kaydetmek amacıyla tutulmaktadır.
 
-
+## 2026-03-25
+- Scharr, Canny, Laplacian için karşılaştırmalı örnek eklendi.
 ## 2026-03-24
 - Sobel kenar algılama için karşılaştırmalı örnek eklendi.
 
