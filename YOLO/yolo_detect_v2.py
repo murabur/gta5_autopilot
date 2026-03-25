@@ -364,7 +364,7 @@ while True:
 
     mask_time_0 = time.perf_counter()
     #process_lane_data fonksiyonu maske verilerini döndürür.
-    annotated_frame, road_mask_full = process_lane_data(results, target_h, target_w, annotated_frame, global_overlay)
+    annotated_frame, road_mask_full = process_lane_data(results = results, target_h = target_h, target_w = target_w, annotated_frame = annotated_frame, global_overlay = global_overlay)
     #road_mask_full yolun nerede olduğuna dair saf bilgidir. annotated_frame insan için görsel sonuçken, road_mask_full hesaplama için veridir.
     #results: YOLO'dan gelen veri nesnesi
     #target_h = 720      #yükseklik
