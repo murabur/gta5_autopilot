@@ -4,6 +4,27 @@ import time
 import numpy as np
 from ultralytics import YOLO
 
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 1. Model ve yapılandırma
+# ══════════════════════════════════════════════════════════════════════════════
+MODEL_PATH = r"YOLO\best.engine"
+model = YOLO(MODEL_PATH, task="segment")
+
+#camera işlemleri
+camera = bettercam.create(output_color="BGR")
+capture_area = (0, 40, 1280, 760)
+
+CLASS_NAMES = {0: 'road', 1: 'sidewalk', 2: 'car', 3: 'motorcycle', 4: 'person', 5: 'traffic_light'}
+CLASS_COLORS = {
+    0: (255, 0, 255),
+    1: (0, 255, 255),
+    2: (255, 0, 0),
+    3: (0, 165, 255),
+    4: (0, 255, 0),
+    5: (0, 0, 255)
+}
+
 prev_center_pts = None
 
 # Mesafe ve durum takibi için global sözlükler
@@ -11,33 +32,17 @@ vehicle_distances = {}
 vehicle_states = {}
 vehicle_areas = {}
 
+target_h = 720      #yükseklik
+target_w = 1280     #hgenişlik
+small_h = 180       #performans için kullanılacak matrisin yüksekliği
+small_w = 320       #performans için kullanılacak matrisin genişliği
+scale_y = small_h / target_h        #180/720 = 0.25
+scale_x = small_w / target_w        #320/1280 = 0.25
+global_overlay = np.zeros((small_h, small_w, 3), dtype=np.uint8) #segmentasyon maskelerini, ana görüntü üzerine yarı şeffaf bir şekilde ve en yüksek performansta çizmek için kullanılan matris
+
 # ══════════════════════════════════════════════════════════════════════════════
-# 1. YARDIMCI FONKSİYONLAR
+# 2. Fonksiyonlar
 # ══════════════════════════════════════════════════════════════════════════════
-
-#.engine dosyası kayma yapıyordu, Ultralyticsin kendi yöntemleri ile bu kayma düzeltildi ve bu fonksiyona şimdilik ihtiyaç kalmadı. Kodun hiçbir kısmında çağrılmıyor.
-def correct_polygon_padding(masks_xy, target_h, target_w, model_img_size=640):
-    """
-    Poligon (XY) koordinatlarındaki letterbox padding kaymasını vektörel olarak düzeltir.
-    """
-    scale = min(model_img_size / target_h, model_img_size / target_w)
-    pad_y = (model_img_size - target_h * scale) / 2
-    pad_x = (model_img_size - target_w * scale) / 2
-
-    corrected_masks = []
-    for pts in masks_xy:
-        if len(pts) == 0: 
-            corrected_masks.append(pts)
-            continue
-            
-        pts_array = np.array(pts, dtype=np.float32)
-        pts_array[:, 0] = (pts_array[:, 0] - pad_x) / scale
-        pts_array[:, 1] = (pts_array[:, 1] - pad_y) / scale
-        
-        corrected_masks.append(pts_array.astype(np.int32))
-        
-    return corrected_masks
-
 
 #road maskesinin ortasını bulma - sanal şerit
 def get_road_centerline(road_mask):
@@ -59,37 +64,6 @@ def get_road_centerline(road_mask):
 
     return center_points
 
-# ══════════════════════════════════════════════════════════════════════════════
-# 2. MODEL VE YAPILANDIRMA
-# ══════════════════════════════════════════════════════════════════════════════
-MODEL_PATH = r"YOLO\best.engine"
-model = YOLO(MODEL_PATH, task="segment")
-
-#camera işlemleri
-camera = bettercam.create(output_color="BGR")
-capture_area = (0, 40, 1280, 760)
-
-CLASS_NAMES = {0: 'road', 1: 'sidewalk', 2: 'car', 3: 'motorcycle', 4: 'person', 5: 'traffic_light'}
-CLASS_COLORS = {
-    0: (255, 0, 255),
-    1: (0, 255, 255),
-    2: (255, 0, 0),
-    3: (0, 165, 255),
-    4: (0, 255, 0),
-    5: (0, 0, 255)
-}
-
-target_h = 720      #yükseklik
-target_w = 1280     #hgenişlik
-small_h = 180       #performans için kullanılacak matrisin yüksekliği
-small_w = 320       #performans için kullanılacak matrisin genişliği
-scale_y = small_h / target_h        #180/720 = 0.25
-scale_x = small_w / target_w        #320/1280 = 0.25
-global_overlay = np.zeros((small_h, small_w, 3), dtype=np.uint8) #segmentasyon maskelerini, ana görüntü üzerine yarı şeffaf bir şekilde ve en yüksek performansta çizmek için kullanılan matris
-
-# ══════════════════════════════════════════════════════════════════════════════
-# 3. İŞLEM FONKSİYONLARI
-# ══════════════════════════════════════════════════════════════════════════════
 
 #ekran yakalama fonksiyonu
 def screen_capture(cam_obj, area):
