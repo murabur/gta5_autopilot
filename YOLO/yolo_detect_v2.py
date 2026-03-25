@@ -358,12 +358,19 @@ while True:
     time_predict_1 = time.perf_counter()
 
 
-    annotated_frame = frame
-    original_frame = frame.copy()
-    global_overlay.fill(0)
+    annotated_frame = frame #frame değişkenine ikinci bir isim atanıyor. Referans atamasıdır. Bellekte yeni bir klopya oluşturmaz. Shallow Reference(Sığ referans) örneğidir.
+    original_frame = frame.copy() #orijinal frame'in kopyası alınıyor. Bellekte yeni bir alan tahsis edilir. Trafik ışıklarının temiz tespiti için kullanılacak.
+    global_overlay.fill(0) #matrisin içindeki tüm hücrelerin değerlerini 0 yapar. Maske matrisini temizler.
 
     mask_time_0 = time.perf_counter()
+    #process_lane_data fonksiyonu maske verilerini döndürür.
     annotated_frame, road_mask_full = process_lane_data(results, target_h, target_w, annotated_frame, global_overlay)
+    #road_mask_full yolun nerede olduğuna dair saf bilgidir. annotated_frame insan için görsel sonuçken, road_mask_full hesaplama için veridir.
+    #results: YOLO'dan gelen veri nesnesi
+    #target_h = 720      #yükseklik
+    #target_w = 1280     #hgenişlik
+    #annotated_frame fonksiyona veriliyor, fonksiyonda işleniyor, geri tekrar annotated_frame olarak return ediliyor.
+    #global_overlay parametresi ile boş matris fonksiyona veriliyor.
     mask_time_1 = time.perf_counter()
 
     box_time_0 = time.perf_counter()
