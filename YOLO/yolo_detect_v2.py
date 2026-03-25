@@ -364,13 +364,14 @@ while True:
 
     mask_time_0 = time.perf_counter()
     #process_lane_data fonksiyonu maske verilerini döndürür.
-    annotated_frame, road_mask_full = process_lane_data(results = results, target_h = target_h, target_w = target_w, annotated_frame = annotated_frame, global_overlay = global_overlay)
-    #road_mask_full yolun nerede olduğuna dair saf bilgidir. annotated_frame insan için görsel sonuçken, road_mask_full hesaplama için veridir.
-    #results: YOLO'dan gelen veri nesnesi
-    #target_h = 720      #yükseklik
-    #target_w = 1280     #hgenişlik
-    #annotated_frame fonksiyona veriliyor, fonksiyonda işleniyor, geri tekrar annotated_frame olarak return ediliyor.
-    #global_overlay parametresi ile boş matris fonksiyona veriliyor.
+    annotated_frame, road_mask_full = process_lane_data(results = results,      #results: YOLO'dan gelen veri nesnesi
+                                                        target_h = target_h,    #target_h = 720      #yükseklik
+                                                        target_w = target_w,    #target_w = 1280     #hgenişlik
+                                                        annotated_frame = annotated_frame,  #annotated_frame fonksiyona veriliyor, fonksiyonda işleniyor, geri tekrar annotated_frame olarak return ediliyor.
+                                                        global_overlay = global_overlay     #global_overlay parametresi ile boş matris fonksiyona veriliyor.
+                                                        )
+    #annotated_frame işlenmiş görüntüdür. Orjinal frame görüntüsüne referanstır. Değişiklikler frame üzerinde de uygulanır.
+    # road_mask_full yolun nerede olduğuna dair saf bilgidir. annotated_frame insan için görsel sonuçken, road_mask_full hesaplama için veridir.
     mask_time_1 = time.perf_counter()
 
     box_time_0 = time.perf_counter()
