@@ -358,9 +358,9 @@ while True:
     time_predict_1 = time.perf_counter()
 
 
-    annotated_frame = frame #frame değişkenine ikinci bir isim atanıyor. Referans atamasıdır. Bellekte yeni bir klopya oluşturmaz. Shallow Reference(Sığ referans) örneğidir.
-    original_frame = frame.copy() #orijinal frame'in kopyası alınıyor. Bellekte yeni bir alan tahsis edilir. Trafik ışıklarının temiz tespiti için kullanılacak.
-    global_overlay.fill(0) #matrisin içindeki tüm hücrelerin değerlerini 0 yapar. Maske matrisini temizler.
+    annotated_frame = frame         #frame değişkenine ikinci bir isim atanıyor. Referans atamasıdır. Bellekte yeni bir klopya oluşturmaz. Shallow Reference(Sığ referans) örneğidir.
+    original_frame = frame.copy()   #orijinal frame'in kopyası alınıyor. Bellekte yeni bir alan tahsis edilir. Trafik ışıklarının temiz tespiti için kullanılacak.
+    global_overlay.fill(0)          #matrisin içindeki tüm hücrelerin değerlerini 0 yapar. Maske matrisini temizler.
 
     mask_time_0 = time.perf_counter()
     #process_lane_data fonksiyonu maske verilerini döndürür.
