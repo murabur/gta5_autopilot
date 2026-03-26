@@ -368,7 +368,7 @@ while True:
                                                         target_h = target_h,    #target_h = 720      #yükseklik
                                                         target_w = target_w,    #target_w = 1280     #hgenişlik
                                                         annotated_frame = annotated_frame,  #annotated_frame fonksiyona veriliyor, fonksiyonda işleniyor, geri tekrar annotated_frame olarak return ediliyor.
-                                                        global_overlay = global_overlay     #global_overlay parametresi ile boş matris fonksiyona veriliyor.
+                                                        overlay = global_overlay     #global_overlay parametresi ile boş matris fonksiyona veriliyor.
                                                         )
     #annotated_frame işlenmiş görüntüdür. Orjinal frame görüntüsüne referanstır. Değişiklikler frame üzerinde de uygulanır.
     # road_mask_full yolun nerede olduğuna dair saf bilgidir. annotated_frame insan için görsel sonuçken, road_mask_full hesaplama için veridir.
@@ -404,7 +404,10 @@ while True:
     #en büyük kırmızı ışığın ekrana getirilmesi
     #en büyük trafik ışığı verisi None değilse ve boyutu 0'dan büyükse True döner.  .size numpy kütüphanesinin bir attribute(öznitelik)'dur. 100 x 50 pikmsel ve 3 kanallı RGB ise 100 x 50 x 3 = 15.000 değerini döndürür.
     if best_light_roi is not None and best_light_roi.size > 0: 
-        display_roi = cv2.resize(best_light_roi, (200, 400))
+        h, w = best_light_roi.shape[:2]
+        aspect_ratio = w / h 
+        new_w = int(400 / aspect_ratio)
+        display_roi = cv2.resize(best_light_roi, (new_w, 400))
         cv2.imshow("En Yakin Isik", display_roi)
         
     if cv2.waitKey(1) & 0xFF == ord('q'): break
