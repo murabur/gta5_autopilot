@@ -388,7 +388,7 @@ while True:
 
     #FPS sayaç bitiş noktası
     t1 = time.perf_counter()
-    fps = 1 / (t1 - t0)
+    fps = 1 / (t1 - t0) #1 saniye / zaman farkı
 
 
     #FPS ve işlem sürelerini ekrana yazdırma
@@ -397,11 +397,13 @@ while True:
     cv2.putText(final_display, f"Predict: {(time_predict_1 - time_predict_0)*1000:.1f} ms", (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
     cv2.putText(final_display, f"Mask: {(mask_time_1 - mask_time_0)*1000:.1f} ms", (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
     cv2.putText(final_display, f"Box: {(box_time_1 - box_time_0)*1000:.1f} ms", (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+
     #final görüntüyü ekrana basma
     cv2.imshow("final_display", final_display)
 
     #en büyük kırmızı ışığın ekrana getirilmesi
-    if best_light_roi is not None and best_light_roi.size > 0:
+    #en büyük trafik ışığı verisi None değilse ve boyutu 0'dan büyükse True döner.  .size numpy kütüphanesinin bir attribute(öznitelik)'dur. 100 x 50 pikmsel ve 3 kanallı RGB ise 100 x 50 x 3 = 15.000 değerini döndürür.
+    if best_light_roi is not None and best_light_roi.size > 0: 
         display_roi = cv2.resize(best_light_roi, (200, 400))
         cv2.imshow("En Yakin Isik", display_roi)
         
