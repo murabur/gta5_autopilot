@@ -403,11 +403,21 @@ while True:
 
     #en büyük kırmızı ışığın ekrana getirilmesi
     #en büyük trafik ışığı verisi None değilse ve boyutu 0'dan büyükse True döner.  .size numpy kütüphanesinin bir attribute(öznitelik)'dur. 100 x 50 pikmsel ve 3 kanallı RGB ise 100 x 50 x 3 = 15.000 değerini döndürür.
-    if best_light_roi is not None and best_light_roi.size > 0: 
+    if best_light_roi is not None and best_light_roi.size > 0:
+        # 1. Mevcut boyutları al (h: yükseklik, w: genişlik)
         h, w = best_light_roi.shape[:2]
-        aspect_ratio = w / h 
-        new_w = int(400 / aspect_ratio)
+        
+        # 2. En-Boy oranını hesapla (Genişlik / Yükseklik)
+        aspect_ratio = w / h
+        
+        # 3. Yeni genişliği hesapla (Hedef Yükseklik * Oran)
+        # Eğer oran 0.5 ise (dikdörtgen ışık), yeni genişlik 400 * 0.5 = 200 olur.
+        new_w = int(400 * aspect_ratio)
+        
+        # 4. Yeniden boyutlandır (OpenCV'de sıralama: Genişlik, Yükseklik)
         display_roi = cv2.resize(best_light_roi, (new_w, 400))
+        
+        # 5. Ekrana bas
         cv2.imshow("En Yakin Isik", display_roi)
         
     if cv2.waitKey(1) & 0xFF == ord('q'): break
