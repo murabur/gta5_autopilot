@@ -34,8 +34,8 @@ vehicle_areas = {}
 
 target_h = 720      #yükseklik
 target_w = 1280     #hgenişlik
-small_h = 180       #performans için kullanılacak matrisin yüksekliği
-small_w = 320       #performans için kullanılacak matrisin genişliği
+small_h = 180       #maske işlemlerinde performans için kullanılacak matrisin yüksekliği
+small_w = 320       #maske işlemlerinde performans için kullanılacak matrisin genişliği
 scale_y = small_h / target_h        #180/720 = 0.25
 scale_x = small_w / target_w        #320/1280 = 0.25
 global_overlay = np.zeros((small_h, small_w, 3), dtype=np.uint8) #segmentasyon maskelerini, ana görüntü üzerine yarı şeffaf bir şekilde ve en yüksek performansta çizmek için kullanılan matris
