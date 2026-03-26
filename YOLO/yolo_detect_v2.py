@@ -9,13 +9,13 @@ from ultralytics import YOLO
 # 1. Model ve yapılandırma
 # ══════════════════════════════════════════════════════════════════════════════
 MODEL_PATH = r"YOLO\best.engine"
-model = YOLO(MODEL_PATH, task="segment")
+model = YOLO(MODEL_PATH, task="segment")    #.engine dosyası verildiğinde task="segment" zorunlu
 
 #camera işlemleri
-camera = bettercam.create(output_color="BGR")
-capture_area = (0, 40, 1280, 760)
+camera = bettercam.create(output_color="BGR")   #opencv BGR istediği için output_color="BGR"
+capture_area = (0, 40, 1280, 760)               #pencerenin üst kısmı alınmasın diye 40 - 760 -> 1280 x 720 çözünürlük
 
-CLASS_NAMES = {0: 'road', 1: 'sidewalk', 2: 'car', 3: 'motorcycle', 4: 'person', 5: 'traffic_light'}
+CLASS_NAMES = {0: 'road', 1: 'sidewalk', 2: 'car', 3: 'motorcycle', 4: 'person', 5: 'traffic_light'}    #Modelin eğitildiği sınıf ID'lerina karşılık gelen isimler
 CLASS_COLORS = {
     0: (255, 0, 255),
     1: (0, 255, 255),
@@ -68,9 +68,10 @@ def get_road_centerline(road_mask):
 #ekran yakalama fonksiyonu
 def screen_capture(cam_obj, area):
     frame = cam_obj.grab(region=area)
-    if frame is None:
-        return None
-    return frame
+    if frame is None: #bettercam bazen None döndürebiliyor. Bunun için eklenen kontrol.
+        return None  
+    return frame        #None dönmediyse frame'i döndürüyor.
+
 
 #tahmin yapan fonksiyon
 def get_predictions(source):
