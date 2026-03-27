@@ -111,10 +111,10 @@ def find_ego_car(boxes, classes, track_ids):
         if classes[i] != 2:     #eğitim setinde car id : 2
             continue            #eğer araba değilse bir sonrakine geçer
   
-        center_x = (x1 + x2) / 2
-        center_y = (y1 + y2) / 2
+        center_x = (x1 + x2) / 2        #kutunun x eksenindeki merkezi
+        center_y = (y1 + y2) / 2        #kutunun y eksenindeki merkezi
 
-        if center_y < screen_bottom * 0.5: #
+        if center_y < screen_bottom * 0.5: #eğer y eksenindeki merkez ekranın üst kısmındaysa dikkate almadan devam et.
             continue
         
         area = (x2 - x1) * (y2 - y1)
