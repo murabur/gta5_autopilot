@@ -111,16 +111,16 @@ def find_ego_car(boxes, classes, track_ids):
         if classes[i] != 2:     #eğitim setinde car id : 2
             continue            #eğer araba değilse bir sonrakine geçer
   
-        cx = (x1 + x2) / 2
-        cy = (y1 + y2) / 2
+        center_x = (x1 + x2) / 2
+        center_y = (y1 + y2) / 2
 
-        if cy < screen_bottom * 0.5: #
+        if center_y < screen_bottom * 0.5: #
             continue
         
         area = (x2 - x1) * (y2 - y1)
         
-        dist_x = abs(cx - screen_center_x)
-        dist_y = abs(cy - screen_bottom)
+        dist_x = abs(center_x - screen_center_x)
+        dist_y = abs(center_y - screen_bottom)
         closeness = 1 / (dist_x + dist_y + 1)
         
         score = closeness * closeness * area
