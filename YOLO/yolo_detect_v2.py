@@ -75,7 +75,13 @@ def screen_capture(cam_obj, area):
 
 #tahmin yapan fonksiyon
 def get_predictions(source):
-    results = model.track(source=source, conf=0.3, verbose=False, half=True, persist=True, stream=True)
+    results = model.track(  source=source,      #predict yapılan görüntü
+                            conf=0.3,           #güven skoru değeri
+                            verbose=False,      #terminale yazdırmayı kapatma     
+                            half=True,          #FP16 half precision - performans arttırır
+                            persist=True,       #takip için hafıza ayarı, false olursa takip kaybında araç yeni bir ID alır
+                            stream=True         #model sadece o anki kareyi işler, bir sonraki kareye geçtiğinde eskisini bellekten atar
+                            )
     return next(results)
 
 
