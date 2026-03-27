@@ -89,30 +89,32 @@ ego_track_id = None
 
 #binilen aracı bulan fonksiyon
 def find_ego_car(boxes, classes, track_ids):
-    global ego_track_id
+    global ego_track_id  #global scope'daki ana değişkene bağlar - yazma yetkisi verir.
     
-    if track_ids is None:
+    if track_ids is None: #track_ids nesnelere atanan kimlik numaraları, eğer None ise return None ile none döndür.
         return None
     
-    if ego_track_id is not None:
-        if ego_track_id in track_ids:
-            return ego_track_id
+    if ego_track_id is not None:        #Eğer sistem daha önceki karelerde bindiğimiz aracı zaten tespit edip bir ID atadıysa
+        if ego_track_id in track_ids:   #ve bu hafızadaki ID, şu anki güncel kamera görüntüsünde (track_ids listesinde) hala mevcutsa
+            return ego_track_id         #aşağıdaki işlemlere girmeden direkt bu ID'yi döndür.
     
-    best_score = 0
-    best_id = None
+    best_score = 0  #en iyi aday aramaya en alttan başlanır
+    best_id = None  #geçici olarak kimlik tutucu
     
-    screen_center_x = 640
-    screen_bottom = 720
+    screen_center_x = 640       #1280 piksel genişliğindeki bir ekranın tam yatay merkezi 1280/640
+    screen_bottom = 720         #ekranın en alt piksel satırı.
     
-    for i, box in enumerate(boxes):
-        x1, y1, x2, y2 = box
-        if classes[i] != 2:
-            continue
+    for i, box in enumerate(boxes):     #tespit edilen kutuları tek tek döngüye sokar.
+        x1, y1, x2, y2 = box            #kutunun köşe koordinatlarını değişkenlere atar
+        
+        #sınıf filtresi
+        if classes[i] != 2:     #eğitim setinde car id : 2
+            continue            #eğer araba değilse bir sonrakine geçer
   
         cx = (x1 + x2) / 2
         cy = (y1 + y2) / 2
 
-        if cy < screen_bottom * 0.5:
+        if cy < screen_bottom * 0.5: #
             continue
         
         area = (x2 - x1) * (y2 - y1)
