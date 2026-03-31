@@ -212,6 +212,14 @@ def get_steering_from_road_mask(road_mask):
     # Ağırlıklı ortalama: toplam sapma / toplam ağırlık
     return sum(errors) / sum(weights)
 
+#Örnek uygulama
+#Ekran merkezi: 640
+#Yolun sağ kenarı: 200
+#Yolun sol kenarı: 1000
+#Yolun ortası: (200+1000)/2 = 600
+#Sapma: (600-640)/640 = -0.06 -> Yol hafif solda
+
+
 #maske işlemleri
 def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
     global prev_center_pts
@@ -465,6 +473,13 @@ while True:
     if road_mask_full is not None:
         steering_error = get_steering_from_road_mask(road_mask_full)
         cv2.putText(final_display, f"Sapma: {steering_error:.2f}", (10, 170), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+
+        if steering_error > 0:
+            cv2.putText(final_display, f"Yol ortasi sagda", (10,200),cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+        elif steering_error < 0:
+            cv2.putText(final_display, f"Yol ortasi solda", (10,200),cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+        else:
+            cv2.putText(final_display, f"Yol ortalandi", (10,200),cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
 
     #final görüntüyü ekrana basma
     cv2.imshow("final_display", final_display)
