@@ -142,9 +142,10 @@ def find_ego_car(boxes, classes, track_ids):
 def detect_traffic_light_color(roi):
     hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)      #görüntüyü HSV'ye çevirme işlemi
     
-    red1 = cv2.inRange(src = hsv, lowerb = (0, 100, 100), upperb = (10, 255, 255))
-    red2 = cv2.inRange(src = hsv, lowerb = (160, 100, 100), upperb = (180, 255, 255))
-    red = cv2.countNonZero(red1 + red2)
+    red1 = cv2.inRange(src = hsv, lowerb = (0, 100, 100), upperb = (10, 255, 255)) #Hue - Saturation - Value değerleri ile siyah beyaz - ikili(binary) maske döndürüyor.
+    red2 = cv2.inRange(src = hsv, lowerb = (160, 100, 100), upperb = (180, 255, 255)) #Hue - Saturation - Value değerleri ile siyah beyaz - ikili(binary) maske döndürüyor.
+
+    red = cv2.countNonZero(red1 + red2) #siyah beyaz - ikili(binary) maskedeki beyaz değerleri sayıyor.
     green = cv2.countNonZero(cv2.inRange(src = hsv, lowerb = (40, 100, 100), upperb = (80, 255, 255)))
     yellow = cv2.countNonZero(cv2.inRange(src = hsv,lowerb = (15, 100, 100), upperb = (35, 255, 255)))
     
