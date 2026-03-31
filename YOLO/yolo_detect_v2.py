@@ -460,9 +460,9 @@ while True:
     cv2.putText(final_display, f"Predict: {(time_predict_1 - time_predict_0)*1000:.1f} ms", (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
     cv2.putText(final_display, f"Mask: {(mask_time_1 - mask_time_0)*1000:.1f} ms", (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
     cv2.putText(final_display, f"Box: {(box_time_1 - box_time_0)*1000:.1f} ms", (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-
-    steering_error = get_steering_from_road_mask(road_mask_full)
-    cv2.putText(final_display, f"Sapma: {steering_error:.2f}", (10, 170), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+    if road_mask_full is not None:
+        steering_error = get_steering_from_road_mask(road_mask_full)
+        cv2.putText(final_display, f"Sapma: {steering_error:.2f}", (10, 170), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
 
     #final görüntüyü ekrana basma
     cv2.imshow("final_display", final_display)
