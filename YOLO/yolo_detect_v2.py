@@ -117,16 +117,23 @@ def find_ego_car(boxes, classes, track_ids):
         if center_y < screen_bottom * 0.5: #eğer y eksenindeki merkez ekranın üst kısmındaysa dikkate almadan devam et.
             continue
         
-        area = (x2 - x1) * (y2 - y1)
+        area = (x2 - x1) * (y2 - y1)       #kutunun alanı hesaplanıyor.
         
-        dist_x = abs(center_x - screen_center_x)
-        dist_y = abs(center_y - screen_bottom)
-        closeness = 1 / (dist_x + dist_y + 1)
+        dist_x = abs(center_x - screen_center_x)    #mutlak değer(kutunun x eksenindeki merkezi - x ekseninde ekran merkezi)
+        dist_y = abs(center_y - screen_bottom)      #mutlak değer(kutunun y eksenindeki merkezi - ekran alt kenarı)
+
+        #Inverse Porportional Scoring - Ters orantılı puanlama
+        #Nesne hedef noktasına ne kadar yakınsa ona üstel olarak ağırlık verilir.
+        #+1 sıfıra bölme hatasını önlemek için eklenmiştir. Ayrıca closeness'ın anlamsız yükselmememsi için normalizasyon işlemdiri.
+        closeness = 1 / (dist_x + dist_y + 1)   #
         
+        #merkeze uzaklık parabolik olarak cezalandırılır.
         score = closeness * closeness * area
-        if score > best_score:
-            best_score = score
-            best_id = track_ids[i]
+
+
+        if score > best_score:      #eğer yeni skor en iyi skordan büyükse
+            best_score = score      #yeni skoru değiştir
+            best_id = track_ids[i]  #yeni best_id'yi ata
     
     ego_track_id = best_id
     return ego_track_id
