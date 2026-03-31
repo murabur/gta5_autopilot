@@ -140,7 +140,7 @@ def find_ego_car(boxes, classes, track_ids):
 
 #trafik ışığı tespiti
 def detect_traffic_light_color(roi):
-    hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+    hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)      #görüntüyü HSV'ye çevirme işlemi
     
     red1 = cv2.inRange(hsv, (0, 100, 100), (10, 255, 255))
     red2 = cv2.inRange(hsv, (160, 100, 100), (180, 255, 255))
