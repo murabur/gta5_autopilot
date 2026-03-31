@@ -125,7 +125,7 @@ def find_ego_car(boxes, classes, track_ids):
         #Inverse Porportional Scoring - Ters orantılı puanlama
         #Nesne hedef noktasına ne kadar yakınsa ona üstel olarak ağırlık verilir.
         #+1 sıfıra bölme hatasını önlemek için eklenmiştir. Ayrıca closeness'ın anlamsız yükselmememsi için normalizasyon işlemdiri.
-        closeness = 1 / (dist_x + dist_y + 1)   #
+        closeness = 1 / (dist_x + dist_y + 1)   
         
         #merkeze uzaklık parabolik olarak cezalandırılır.
         score = closeness * closeness * area
@@ -142,13 +142,11 @@ def find_ego_car(boxes, classes, track_ids):
 def detect_traffic_light_color(roi):
     hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)      #görüntüyü HSV'ye çevirme işlemi
     
-    red1 = cv2.inRange(hsv, (0, 100, 100), (10, 255, 255))
-    red2 = cv2.inRange(hsv, (160, 100, 100), (180, 255, 255))
+    red1 = cv2.inRange(src = hsv, lowerb = (0, 100, 100), upperb = (10, 255, 255))
+    red2 = cv2.inRange(src = hsv, lowerb = (160, 100, 100), upperb = (180, 255, 255))
     red = cv2.countNonZero(red1 + red2)
-    
-    green = cv2.countNonZero(cv2.inRange(hsv, (40, 100, 100), (80, 255, 255)))
-    
-    yellow = cv2.countNonZero(cv2.inRange(hsv, (15, 100, 100), (35, 255, 255)))
+    green = cv2.countNonZero(cv2.inRange(src = hsv, lowerb = (40, 100, 100), upperb = (80, 255, 255)))
+    yellow = cv2.countNonZero(cv2.inRange(src = hsv,lowerb = (15, 100, 100), upperb = (35, 255, 255)))
     
     counts = {"KIRMIZI": red, "YESIL": green, "SARI": yellow}
     best = max(counts, key=counts.get)
