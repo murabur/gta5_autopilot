@@ -163,6 +163,54 @@ def detect_traffic_light_color(roi):
     return best, color_map[best]
 
 
+def get_steering_from_road_mask(road_mask):
+    errors = []     # her yükseklikteki sapma değerini tutacak liste
+    weights = []    # her yüksekliğin önem ağırlığını tutacak liste
+    
+    # Ekranın alt kısmından üste doğru 4 farklı yükseklikten örnekle
+    # 650 araca en yakın (en önemli), 500 en uzak (en az önemli)
+    for y in [650, 600, 550, 500]:
+        
+        # O yükseklikteki satırı al (1280 piksellik yatay şerit)
+        row = road_mask[y, :]
+        
+        # Satırdaki beyaz (yol) piksellerin x koordinatlarını bul
+        white_pixels = np.where(row > 0)[0]
+        
+        # 20'den az piksel varsa yol görünmüyor, bu satırı atla
+        if len(white_pixels) < 20:
+            continue
+        
+        # Yolun sol kenarı: beyaz piksellerin en soldakisi
+        left_edge = white_pixels[0]
+        
+        # Yolun sağ kenarı: beyaz piksellerin en sağdakisi
+        right_edge = white_pixels[-1]
+        
+        # İki kenarın ortası = yolun merkezi
+        road_center = (left_edge + right_edge) / 2
+        
+        # Sapma hesabı: yol merkezi - ekran merkezi
+        # Sonuç: -1.0 (yol solda) ile +1.0 (yol sağda) arası
+        # 0.0 = yol tam ortada, sapma yok
+        error = (road_center - 640) / 640
+        
+        # Ağırlık: araca yakın satırlar daha önemli
+        # y=650 → 650/650 = 1.0 (tam ağırlık)
+        # y=500 → 500/650 = 0.77 (daha az ağırlık)
+        weight = y / 650
+        
+        # Sapmayı ağırlıkla çarp ve listeye ekle
+        errors.append(error * weight)
+        weights.append(weight)
+    
+    # Hiçbir satırda yol bulunamadıysa sapma 0 döndür (düz git)
+    if not weights:
+        return 0.0
+    
+    # Ağırlıklı ortalama: toplam sapma / toplam ağırlık
+    return sum(errors) / sum(weights)
+
 #maske işlemleri
 def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
     global prev_center_pts
@@ -412,6 +460,9 @@ while True:
     cv2.putText(final_display, f"Predict: {(time_predict_1 - time_predict_0)*1000:.1f} ms", (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
     cv2.putText(final_display, f"Mask: {(mask_time_1 - mask_time_0)*1000:.1f} ms", (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
     cv2.putText(final_display, f"Box: {(box_time_1 - box_time_0)*1000:.1f} ms", (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+
+    steering_error = get_steering_from_road_mask(road_mask_full)
+    cv2.putText(final_display, f"Sapma: {steering_error:.2f}", (10, 170), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
 
     #final görüntüyü ekrana basma
     cv2.imshow("final_display", final_display)
