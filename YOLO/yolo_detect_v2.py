@@ -304,6 +304,8 @@ def draw_detections(results, current_frame, original_frame, road_mask_full):
                 del vehicle_distances[k]
                 if k in vehicle_states:
                     del vehicle_states[k]
+                if k in vehicle_areas:
+                    del vehicle_areas[k]
 
         # Ego aracın merkez koordinatlarını bul
         ego_cx, ego_cy = None, None
