@@ -4,6 +4,8 @@ import time
 import numpy as np
 from ultralytics import YOLO
 
+import vgamepad as vg
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 # 1. Model ve yapılandırma
@@ -44,9 +46,37 @@ global_overlay = np.zeros((small_h, small_w, 3), dtype=np.uint8) #segmentasyon m
 # 2. Fonksiyonlar
 # ══════════════════════════════════════════════════════════════════════════════
 
+gamepad = vg.VX360Gamepad()     #xbox360 gamepad'ı başlatır.
+#kontrol - yol ortala.
+def apply_control(steering_error):
+    """
+    steering_error: -1.0 (Tam Sol) ile +1.0 (Tam Sağ) arası
+    Xbox Analog Değer Aralığı: -32768 ile 32767
+    Xbox Trigger Değer Aralığı: 0 ile 255
+    """
+    
+    # 1. Direksiyon Kontrolü (Left Joystick X-Axis)
+    # Sapmayı analog değerine dönüştür
+    steering_gain = 5
+    steer_val = int(steering_error * 32767 * steering_gain)
+    
+    # Sınırları koru (Clamping)
+    steer_val = max(-32768, min(32767, steer_val))
+    
+    # Sol analoğu güncelle
+    gamepad.left_joystick(x_value=steer_val, y_value=0)
+    
+    # 2. Gaz Kontrolü (Right Trigger)
+    # Şimdilik sabit %40 gaz (255 * 0.4 ≈ 100)
+    gamepad.right_trigger(value=100)
+    
+    # Komutları gönder
+    gamepad.update()
+
+
 #road maskesinin ortasını bulma - sanal şerit
 def get_road_centerline(road_mask):
-    height, width = road_mask.shape
+    height, width = road_mask.shape     
     center_points = []
     prev_center_x = width // 2
 
@@ -474,6 +504,7 @@ while True:
     
     if road_mask_full is not None:
         steering_error = get_steering_from_road_mask(road_mask_full)
+        apply_control(steering_error)       #kontrol uygulanması
         cv2.putText(final_display, f"Sapma: {steering_error:.2f}", (10, 170), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
 
         if steering_error > 0:
@@ -482,6 +513,7 @@ while True:
             cv2.putText(final_display, f"Yol ortasi solda", (10,200),cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
         else:
             cv2.putText(final_display, f"Yol ortalandi", (10,200),cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+
 
     #final görüntüyü ekrana basma
     cv2.imshow("final_display", final_display)
