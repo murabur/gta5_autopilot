@@ -250,6 +250,68 @@ def get_steering_from_road_mask(road_mask):
 #Sapma: (600-640)/640 = -0.06 -> Yol hafif solda
 
 
+import math
+
+# Global smoothing değişkeni
+prev_steering_angle = 0.0
+alpha = 0.3  # Smoothing faktörü (0.1 = yavaş, 0.5 = hızlı)
+
+def get_steering_vector(road_mask):
+    """
+    Vektör tabanlı steering hesabı + temporal smoothing
+    
+    Input: road_mask (720x1280, binary, 0 veya 255)
+    Output: smoothed_steering (-1.0 .. 1.0)
+    """
+    global prev_steering_angle
+    
+    height, width = road_mask.shape
+    
+    # === NOKTA 1: YAKIN (araç önü) ===
+    y1 = int(height * 0.7)  # 504
+    row1 = road_mask[y1, :]
+    white1 = np.where(row1 > 0)[0]
+    
+    if len(white1) < 20:
+        return 0.0  # Yol yok, düz git
+    
+    x1 = int(np.mean(white1))  # Yol merkezi x
+    
+    # === NOKTA 2: UZAK (ileri görüş) ===
+    y2 = int(height * 0.4)  # 288
+    row2 = road_mask[y2, :]
+    white2 = np.where(row2 > 0)[0]
+    
+    if len(white2) < 20:
+        return 0.0
+    
+    x2 = int(np.mean(white2))
+    
+    # === VEKTÖR HESABI ===
+    dx = x2 - x1
+    dy = y2 - y1  # Negatif olacak (yukarı doğru)
+    
+    # === AÇI HESABI ===
+    angle_rad = math.atan2(dy, dx)  # -π .. π
+    
+    # Yol koordinat sistemine göre düzeltme
+    # Düz yukarı = -π/2, biz 0 yapmak istiyoruz
+    angle_corrected = angle_rad + (math.pi / 2)
+    
+    # === NORMALIZE (-1 .. 1) ===
+    max_angle = math.pi / 3  # 60 derece = tam sağ/sol
+    steering = angle_corrected / max_angle
+    
+    # Sınırla
+    steering = max(-1.0, min(1.0, steering))
+    
+    # === TEMPORAL SMOOTHING ===
+    smoothed = (prev_steering_angle * (1 - alpha)) + (steering * alpha)
+    prev_steering_angle = smoothed
+    
+    return smoothed
+
+
 #maske işlemleri
 def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
     global prev_center_pts
@@ -303,6 +365,18 @@ def process_lane_data(results, target_h, target_w, annotated_frame, overlay):
             if len(current_center_pts) > 1:
                 for j in range(len(current_center_pts) - 1):
                     cv2.line(annotated_frame, current_center_pts[j], current_center_pts[j+1], (0, 255, 255), 2)
+
+            # process_lane_data içinde, centerline çiziminden sonra:
+
+            # Vektör çizimi (debug)
+            if len(current_center_pts) >= 2:
+                # Yakın ve uzak noktaları bul
+                near_pt = current_center_pts[-1]  # En yakın (liste sonu)
+                far_idx = min(len(current_center_pts) // 2, 5)  # Orta-yakın
+                far_pt = current_center_pts[far_idx]
+                
+                # Sarı vektör oku çiz
+                cv2.arrowedLine(annotated_frame, near_pt, far_pt, (0, 255, 255), 3)
 
         overlay_resized = cv2.resize(overlay, (target_w, target_h))
         cv2.addWeighted(src1=overlay_resized, alpha=0.4, src2=annotated_frame, beta=0.6, gamma=0, dst=annotated_frame)
@@ -503,17 +577,31 @@ while True:
     cv2.putText(final_display, f"Box: {(box_time_1 - box_time_0)*1000:.1f} ms", (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
     
     if road_mask_full is not None:
-        steering_error = get_steering_from_road_mask(road_mask_full)
-        apply_control(steering_error)       #kontrol uygulanması
-        cv2.putText(final_display, f"Sapma: {steering_error:.2f}", (10, 170), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+        
 
+        # YENİ KOD:
+    
+        steering_vector = get_steering_vector(road_mask_full)
+        # apply_control(steering_vector)  # Artık smoothed değer
+        
+        # Debug gösterimi
+        cv2.putText(final_display, f"Vect: {steering_vector:+.2f}", 
+                (10, 170), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+        
+        
+        #steering_error = get_steering_from_road_mask(road_mask_full)
+        #apply_control(steering_error)       #kontrol uygulanması
+        
+        #cv2.putText(final_display, f"Sapma: {steering_error:.2f}", (10, 170), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+
+        """
         if steering_error > 0:
             cv2.putText(final_display, f"Yol ortasi sagda", (10,200),cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
         elif steering_error < 0:
             cv2.putText(final_display, f"Yol ortasi solda", (10,200),cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
         else:
             cv2.putText(final_display, f"Yol ortalandi", (10,200),cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
-
+        """
 
     #final görüntüyü ekrana basma
     cv2.imshow("final_display", final_display)
