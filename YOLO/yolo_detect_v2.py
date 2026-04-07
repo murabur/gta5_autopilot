@@ -3,6 +3,7 @@ import cv2
 import time
 import numpy as np
 from ultralytics import YOLO
+import torch
 
 import vgamepad as vg
 
@@ -48,29 +49,36 @@ global_overlay = np.zeros((small_h, small_w, 3), dtype=np.uint8) #segmentasyon m
 
 gamepad = vg.VX360Gamepad()     #xbox360 gamepad'ı başlatır.
 #kontrol - yol ortala.
-def apply_control(steering_error):
-    """
-    steering_error: -1.0 (Tam Sol) ile +1.0 (Tam Sağ) arası
-    Xbox Analog Değer Aralığı: -32768 ile 32767
-    Xbox Trigger Değer Aralığı: 0 ile 255
-    """
+# Global
+prev_steering_error = 0.0
+
+def apply_control(steering_error, should_brake, should_slow):
+    global prev_steering_error
     
-    # 1. Direksiyon Kontrolü (Left Joystick X-Axis)
-    # Sapmayı analog değerine dönüştür
-    steering_gain = 5
-    steer_val = int(steering_error * 32767 * steering_gain)
-    
-    # Sınırları koru (Clamping)
+    # PD Kontrolcü
+    Kp = 5.0
+    Kd = 2.0
+    derivative = steering_error - prev_steering_error
+    steer_val = int((Kp * steering_error + Kd * derivative) * 32767)
     steer_val = max(-32768, min(32767, steer_val))
+    prev_steering_error = steering_error
     
-    # Sol analoğu güncelle
     gamepad.left_joystick(x_value=steer_val, y_value=0)
     
-    # 2. Gaz Kontrolü (Right Trigger)
-    # Şimdilik sabit %40 gaz (255 * 0.4 ≈ 100)
-    gamepad.right_trigger(value=100)
-    
-    # Komutları gönder
+    # Gaz / Fren
+    if should_brake:
+        gamepad.right_trigger(value=0)        # Gaz bırak
+        gamepad.left_trigger(value=200)       # Fren bas
+    elif should_slow:
+        gamepad.right_trigger(value=50)       # Hafif gaz
+        gamepad.left_trigger(value=0)
+# Gaz / Fren — else bloğunu güncelle
+    else:
+        base_gas = int(200 * (1 - abs(steering_error) * 0.5))
+        gamepad.right_trigger(value=max(80, base_gas))
+        gamepad.left_trigger(value=0)
+
+        
     gamepad.update()
 
 
@@ -113,6 +121,8 @@ def get_predictions(source):
                             stream=True         #model sadece o anki kareyi işler, bir sonraki kareye geçtiğinde eskisini bellekten atar
                             )
     return next(results)
+
+
 
 
 ego_track_id = None
@@ -576,35 +586,25 @@ while True:
     cv2.putText(final_display, f"Mask: {(mask_time_1 - mask_time_0)*1000:.1f} ms", (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
     cv2.putText(final_display, f"Box: {(box_time_1 - box_time_0)*1000:.1f} ms", (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
     
+
+    should_brake = False
+    should_slow = False
     if road_mask_full is not None:
-        
+        steering_error = get_steering_from_road_mask(road_mask_full)
+        apply_control(steering_error, False, False)
+    else:
+        apply_control(0.0, False, False)
 
-        # YENİ KOD:
-    
-        steering_vector = get_steering_vector(road_mask_full)
-        # apply_control(steering_vector)  # Artık smoothed değer
-        
-        # Debug gösterimi
-        cv2.putText(final_display, f"Vect: {steering_vector:+.2f}", 
-                (10, 170), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
-        
-        
-        #steering_error = get_steering_from_road_mask(road_mask_full)
-        #apply_control(steering_error)       #kontrol uygulanması
-        
-        #cv2.putText(final_display, f"Sapma: {steering_error:.2f}", (10, 170), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
 
-        """
-        if steering_error > 0:
-            cv2.putText(final_display, f"Yol ortasi sagda", (10,200),cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
-        elif steering_error < 0:
-            cv2.putText(final_display, f"Yol ortasi solda", (10,200),cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
-        else:
-            cv2.putText(final_display, f"Yol ortalandi", (10,200),cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
-        """
-
+    # Mevcut debug bilgilerinin altına ekle
+    status = "FREN" if should_brake else "YAVAS" if should_slow else "GAZ"
+    status_color = (0,0,255) if should_brake else (0,255,255) if should_slow else (0,255,0)
+    cv2.putText(final_display, status, (10, 200), 
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7, status_color, 2)
     #final görüntüyü ekrana basma
     cv2.imshow("final_display", final_display)
+
+
 
     #en büyük kırmızı ışığın ekrana getirilmesi
     #en büyük trafik ışığı verisi None değilse ve boyutu 0'dan büyükse True döner.  .size numpy kütüphanesinin bir attribute(öznitelik)'dur. 100 x 50 pikmsel ve 3 kanallı RGB ise 100 x 50 x 3 = 15.000 değerini döndürür.
