@@ -3,6 +3,7 @@
 Bu dosya projenin geliştirme sürecindeki teknik ilerlemeleri ve yapılan deneyleri kaydetmek amacıyla tutulmaktadır.
 ## 2026-04-08
 - [yolo_detect_v2 ](./YOLO\yolo_detect_v2.py) dosyasına vgamepad kütüphanesi ile kontrol eklendi.
+- C++ çalışma klasörü açıldı, C++ çalışılmaya başlandı.
 ## 2026-04-01
 - [yolo_detect_v2 ](./YOLO\yolo_detect_v2.py) dosyasında ekran ortasına göre yol maskesinin ortasının sapmasını hesaplayıp ekrana yazdıran fonksiyon eklendi
 
