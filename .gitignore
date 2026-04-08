@@ -15,3 +15,43 @@ venv/
 
 # Test dosyası
 Bolum_1_Temeller/Video_1.3_OpenCV/test.py
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# C++ Derleme Kalıntıları (Build Artifacts)
+# ══════════════════════════════════════════════════════════════════════════════
+
+# Windows Executable ve Debug dosyaları
+*.exe
+*.obj
+*.pdb
+*.ilk
+*.tlog
+*.lastbuildstate
+
+# Statik ve Dinamik Kütüphaneler
+*.lib
+*.dll
+*.exp
+
+# Linux/macOS Derleme çıktıları
+*.o
+*.out
+*.a
+*.so
+
+# IDE Spesifik (Visual Studio & VS Code Build)
+.vs/
+bin/
+obj/
+out/
+build/
+x64/
+x86/
+Generated\ Files/
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Proje Yönetimi
+# ══════════════════════════════════════════════════════════════════════════════
+research/
+*_deneme.py
